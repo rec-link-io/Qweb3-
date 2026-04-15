@@ -1323,8 +1323,8 @@ html,body{height:100%;background:#000;font-family:'Plus Jakarta Sans',sans-serif
         <i class="fas fa-users"></i>Users
         <span class="nav-badge" id="nb-users" style="display:none;"></span>
       </div>
-      <div class="nav-item" id="nav-submissions" onclick="switchPage('all-transactions')">
-        <i class="fas fa-inbox"></i>All Requests
+      <div class="nav-item" id="nav-transactions" onclick="switchPage('all-transactions')">
+        <i class="fas fa-list-check"></i>All Transactions
         <span class="nav-badge" id="nb-pending" style="display:none;"></span>
       </div>
       <div class="nav-item" id="nav-balance" onclick="switchPage('balance')">
@@ -1730,7 +1730,7 @@ function switchPage(key){
   } else if(key==='all-transactions'){
     showMainPage('page-all-transactions'); buildAllTransactions();
   } else if(SUB_PAGES.includes(key)){
-    document.getElementById('nav-submissions')?.classList.add('active');
+    document.getElementById('nav-transactions')?.classList.add('active');
     currentSubKey = key;
     showMainPage('page-submissions');
     buildSubsPage(key);
@@ -3447,6 +3447,13 @@ function kycRow(fieldKey, label, value, icon, iconColor) {
     </div>
   `;
 }
+// Backward-compatible aliases for any legacy lowercase calls.
+function editrow(...args){ return editRow(...args); }
+function kycrow(...args){ return kycRow(...args); }
+window.editRow = editRow;
+window.kycRow = kycRow;
+window.editrow = editrow;
+window.kycrow = kycrow;
 
 function renderUserProfile(uid){
   const u    = allUsers[uid] || {};
@@ -3584,6 +3591,8 @@ function renderUserProfile(uid){
     const countEl = document.getElementById('up-txn-count');
     if(countEl) countEl.textContent = count + ' records';
   }
+  // Expose for inline onclick handlers in generated HTML.
+  window.renderTxnHistory = renderTxnHistory;
 
   // Build pill tabs for all filter types
   const txnPills = [
@@ -3632,14 +3641,7 @@ function renderUserProfile(uid){
   ${editRow('phone', 'Phone', info.phone, 'fa-phone', 'var(--green)')}
   ${editRow('password','Password', info.password||'', 'fa-lock', 'var(--purple)','password')}
   ${kycRow('kycStatus','KYC Status', info.kycStatus, 'fa-id-card', 'var(--blue)')}
-        <div class="up-row">
-          <div class="up-row-icon" style="background:rgba(240,185,11,.1);color:var(--gold);"><i class="fas fa-fingerprint"></i></div>
-          <span class="up-row-label">Account No.</span>
-          <span class="up-row-value" style="color:var(--gold);font-weight:800;">${info.accountNumber||uid.slice(0,11)}</span>
-          <div class="up-row-actions">
-            <button class="up-icon-btn up-copy-btn" onclick="copyText('${info.accountNumber||uid}')"><i class="fas fa-copy"></i></button>
-          </div>
-        </div>
+  ${editRow('accountNumber', 'Account No.', info.accountNumber||uid.slice(0,11), 'fa-fingerprint', 'var(--gold)')}
         <div class="up-row">
           <div class="up-row-icon" style="background:rgba(255,255,255,.06);color:var(--text3);"><i class="fas fa-id-badge"></i></div>
           <span class="up-row-label">User ID</span>
