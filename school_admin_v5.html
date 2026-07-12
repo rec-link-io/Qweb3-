@@ -865,6 +865,7 @@ function toast(title,sub="",type="info"){
   c.appendChild(t);setTimeout(()=>{t.classList.add("rm");setTimeout(()=>t.remove(),250)},4000);
 }
 window.copyText=v=>{navigator.clipboard.writeText(v).then(()=>toast("Copied!","","success"));};
+window.addEventListener("unhandledrejection",e=>{console.error(e.reason);toast("Action failed",e.reason?.message||String(e.reason||"Please try again"),"error");});
 
 // ════ AUTH ════
 document.getElementById("a-btn").addEventListener("click",handleLogin);
@@ -1043,8 +1044,9 @@ async function renderDashAudit(){
 }
 
 // ════ HELPERS ════
-function genId(prefix){return `${prefix}${Date.now().toString(36).toUpperCase()}`;}
+function genId(prefix){return `${prefix}${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).slice(2,6).toUpperCase()}`;}
 function genKey(code){const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let k=(code||"TCH").substring(0,3)+"-";for(let i=0;i<6;i++)k+=c[Math.floor(Math.random()*c.length)];return k;}
+function genPassword(prefix="PWD"){const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let k=prefix+"-";for(let i=0;i<8;i++)k+=c[Math.floor(Math.random()*c.length)];return k;}
 function genPin(){const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let p="";for(let i=0;i<12;i++){if(i===4||i===8)p+="-";p+=c[Math.floor(Math.random()*c.length)];}return p;}
 function fmt(n,currency="NGN"){try{return new Intl.NumberFormat("en-NG",{style:"currency",currency,minimumFractionDigits:0}).format(n||0);}catch{return `${n||0}`;}}
 function getGrade(total){const bands=S.gradingConfig?.bands||gradeBands;for(const b of bands)if(total>=b.min&&total<=b.max)return{grade:b.grade,remark:b.remark};return{grade:"F",remark:"Fail"};}
@@ -1230,7 +1232,7 @@ function renderStudents(filter="",clsFilter=""){
       <td style="font-size:11px">${s.parentPhone||"—"}</td>
       <td><span class="badge ${schoolCount>1?"b-y":"b-gr"}">${schoolCount} school${schoolCount>1?"s":""}</span></td>
       <td><span class="badge b-g">Active</span></td>
-      <td class="td-acts"><button class="btn bs bsm" onclick="viewStudentProfile('${id}')">View</button><button class="btn bw bsm" onclick="markAlumni('${id}')">Alumni</button></td>
+      <td class="td-acts"><button class="btn bs bsm" onclick="viewStudentProfile('${id}')">View</button><button class="btn bg bsm" onclick="resetStudentPassword('${id}')">Password</button><button class="btn bw bsm" onclick="markAlumni('${id}')">Alumni</button></td>
     </tr>`;
   }).join("");
   renderAlumni();
@@ -1304,9 +1306,11 @@ window.viewStudentProfile=function(studentId){
   document.getElementById("m-sv-title").textContent=s.name;
   document.getElementById("m-sv-body").innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)">${s.photoUrl?`<img src="${s.photoUrl}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)" alt=""/>`:""}<div><div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700">${s.name}</div><div style="font-size:11px;color:var(--text2)">${cls}${arm} · ${s.studentId}</div></div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${[["Gender",s.gender||"—"],["DOB",s.dob||"—"],["Admission",e.admissionNumber||"—"],["Parent",s.parentName||"—"],["Parent Phone",s.parentPhone||"—"],["Portal Password",s.studentPassword||"—"],["Schools",(s.schoolHistory||[]).join(" → ")||SCHOOL_ID],["Enrolled",e.enrolledAt?new Date(e.enrolledAt).toLocaleDateString("en-NG"):"—"]].map(([l,v])=>`<div style="background:var(--bg4);border:1px solid var(--border);border-radius:var(--radius);padding:9px 11px"><div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">${l}</div><div style="font-size:12px;font-weight:500;color:var(--text)">${v}</div></div>`).join("")}</div>`;
-  document.getElementById("m-sv-foot").innerHTML=`<button class="btn bs" data-close="m-stu-view">Close</button><button class="btn bw bsm" onclick="markAlumni('${studentId}');closeModal('m-stu-view')">Mark Alumni</button>`;
+  document.getElementById("m-sv-foot").innerHTML=`<button class="btn bs" data-close="m-stu-view">Close</button><button class="btn bg bsm" onclick="resetStudentPassword('${studentId}')">Generate New Password</button><button class="btn bw bsm" onclick="markAlumni('${studentId}');closeModal('m-stu-view')">Mark Alumni</button>`;
   openModal("m-stu-view");
 };
+
+window.resetStudentPassword=async function(studentId){const s=STUDENTS[studentId]||ALUMNI[studentId];if(!s){toast("Student not found","","error");return;}const pass=genPassword("STU");await update(dbr(`students/${studentId}`),{studentPassword:pass,passwordUpdatedAt:Date.now(),passwordUpdatedBy:auth.currentUser?.email||"admin"});if(STUDENTS[studentId])STUDENTS[studentId].studentPassword=pass;if(ALUMNI[studentId])ALUMNI[studentId].studentPassword=pass;await auditLog("Student password reset",`${s.name||studentId} (${studentId})`);toast("New student password",pass,"success");viewStudentProfile(studentId);};
 
 // ════ TEACHERS ════
 document.getElementById("add-tch-btn").addEventListener("click",()=>{["tc-id","tc-name","tc-phone","tc-key"].forEach(id=>document.getElementById(id).value="");openModal("m-tch");});
@@ -1321,9 +1325,10 @@ document.getElementById("save-tch-btn").addEventListener("click",async()=>{
 function renderTeachers(filter=""){
   const tbody=document.getElementById("tch-tbody");let entries=Object.entries(S.teachers||{});
   if(filter)entries=entries.filter(([,t])=>t.name?.toLowerCase().includes(filter.toLowerCase()));
-  tbody.innerHTML=entries.length?entries.map(([id,t])=>{const subj=S.subjects[t.subjectId]?.name||"—";const classes=(t.classes||[]).map(c=>S.classes[c]?.name||c).join(", ")||"—";return `<tr><td class="td-id">${t.id||id}</td><td class="td-b">${t.name}</td><td>${subj}</td><td style="font-size:10px">${classes}</td><td><code style="background:var(--bg4);padding:2px 7px;border-radius:4px;font-size:10px;letter-spacing:1px">${t.accessKey}</code></td><td><button class="btn bd bsm" onclick="delItem('teachers','${id}')">Del</button></td></tr>`;}).join(""):`<tr><td colspan="6"><div class="empty"><p>No teachers yet</p></div></td></tr>`;
+  tbody.innerHTML=entries.length?entries.map(([id,t])=>{const subj=S.subjects[t.subjectId]?.name||"—";const classes=(t.classes||[]).map(c=>S.classes[c]?.name||c).join(", ")||"—";return `<tr><td class="td-id">${t.id||id}</td><td class="td-b">${t.name}</td><td>${subj}</td><td style="font-size:10px">${classes}</td><td><code style="background:var(--bg4);padding:2px 7px;border-radius:4px;font-size:10px;letter-spacing:1px">${t.accessKey}</code></td><td><button class="btn bg bsm" onclick="resetTeacherPassword('${id}')">Password</button><button class="btn bd bsm" onclick="delItem('teachers','${id}')">Del</button></td></tr>`;}).join(""):`<tr><td colspan="6"><div class="empty"><p>No teachers yet</p></div></td></tr>`;
 }
 document.getElementById("tch-search").addEventListener("input",e=>renderTeachers(e.target.value));
+window.resetTeacherPassword=async function(teacherId){const t=S.teachers?.[teacherId];if(!t){toast("Teacher not found","","error");return;}const code=S.subjects[t.subjectId]?.code||"TCH";const key=genKey(code);await update(ir("teachers",teacherId),{accessKey:key,passwordUpdatedAt:Date.now(),passwordUpdatedBy:auth.currentUser?.email||"admin"});S.teachers[teacherId].accessKey=key;renderTeachers(document.getElementById("tch-search").value);await auditLog("Teacher password reset",`${t.name||teacherId} · New key: ${key}`);toast("New teacher access key",key,"success");};
 
 // ════ RESULTS ════
 document.querySelectorAll(".tab[data-rtab]").forEach(t=>{
@@ -1386,8 +1391,10 @@ document.getElementById("gen-pins-btn").addEventListener("click",async()=>{
   const sessionId=document.getElementById("pin-sess").value;const termId=document.getElementById("pin-term").value;const qty=Math.min(parseInt(document.getElementById("pin-qty").value)||50,500);
   if(!sessionId||!termId){toast("Select session and term","","error");return;}
   const btn=document.getElementById("gen-pins-btn");btn.disabled=true;btn.innerHTML='<div class="spin"></div> Generating...';
-  for(let i=0;i<qty;i++){const id=genId("PIN");await set(ir("pins",id),{pin:genPin(),schoolId:SCHOOL_ID,sessionId,termId,used:false,usedBy:null,type:"result",createdAt:Date.now()});}
-  await auditLog("Result pins generated",`${qty} pins`);toast("Pins generated",`${qty} pins ready`,"success");btn.disabled=false;btn.textContent="Generate Result Pins";renderPins();
+  const batchId=genId("BATCH");const now=Date.now();const updates={};
+  for(let i=0;i<qty;i++){const id=genId("PIN");updates[`pins/${SCHOOL_ID}/${id}`]={pin:genPin(),schoolId:SCHOOL_ID,sessionId,termId,used:false,usedBy:null,usedAt:null,type:"result",batchId,createdAt:now};}
+  await update(ref(db),updates);S.pins={...(S.pins||{}),...Object.fromEntries(Object.entries(updates).map(([path,value])=>[path.split("/").pop(),value]))};
+  await auditLog("Result pins generated",`${qty} pins · Batch ${batchId}`);toast("Pins generated",`${qty} pins ready`,"success");btn.disabled=false;btn.textContent="Generate Result Pins";renderPins();
 });
 async function renderPins(){
   const snap=await get(sr("pins"));const grid=document.getElementById("pins-grid");const countEl=document.getElementById("pin-count-lbl");
@@ -1397,7 +1404,7 @@ async function renderPins(){
   const resultPins=pins.filter(p=>!p.type||p.type==="result");
   const filtered=filter?resultPins.filter(p=>filter==="used"?p.used:!p.used):resultPins;
   countEl.textContent=`${resultPins.filter(p=>!p.used).length} unused · ${resultPins.length} total`;
-  grid.innerHTML=filtered.slice(0,200).map(p=>`<div class="pin-card"><div class="pin-code">${p.pin}</div><span class="badge ${p.used?"b-r":"b-g"}">${p.used?"Used":"Active"}</span></div>`).join("")||'<div class="empty" style="grid-column:1/-1"><p>No pins match</p></div>';
+  grid.innerHTML=filtered.map(p=>{const who=p.usedBy?(STUDENTS[p.usedBy]?.name||p.usedBy):"Not used";const sess=S.sessions[p.sessionId]?.name||p.sessionId||"—";const term=S.terms[p.termId]?.name||p.termId||"—";return `<div class="pin-card" style="border-color:${p.used?"rgba(239,68,68,0.35)":"rgba(34,197,94,0.35)"}"><div class="pin-code">${p.pin}</div><span class="badge ${p.used?"b-r":"b-g"}">${p.used?"Used":"Unused"}</span><div style="font-size:9px;color:var(--text3);margin-top:6px;line-height:1.5">${sess} · ${term}<br/>Batch: ${p.batchId||"old"}<br/>${who}${p.usedAt?` · ${new Date(p.usedAt).toLocaleDateString("en-NG")}`:""}</div></div>`}).join("")||'<div class="empty" style="grid-column:1/-1"><p>No pins match</p></div>';
 }
 document.getElementById("pin-filter").addEventListener("change",renderPins);
 
