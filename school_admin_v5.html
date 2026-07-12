@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>SchoolCore — Admin Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet"/>
+<!-- Font Awesome (modern icons) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-pap7f5m1x+4Qq6z6VJ3u5Qb1a6i7m+3xR1h0V7x6c8pJ8q6bF5F4g1Aq9V1Dg7bK3F5v1b6c2c3x4Y6Z3Y7kw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+
+<!-- PWA Manifest and Icon -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png" type="image/png">
+<meta name="theme-color" content="#0b1220">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+
+<link rel="icon" href="favicon.png">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -211,6 +222,38 @@ tbody tr:hover td{background:rgba(255,255,255,0.015);color:var(--text)}
 .ibox strong{color:var(--P2)}
 .wbox{background:var(--wdim);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius);padding:11px 13px;font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:13px}
 .wbox strong{color:var(--warning)}
+/* ── WALLET ── */
+.wallet-bal-card{background:linear-gradient(135deg,rgba(91,110,245,0.18),rgba(240,192,64,0.08));border:1px solid rgba(91,110,245,0.28);border-radius:var(--radius2);padding:22px;margin-bottom:16px;position:relative;overflow:hidden}
+.wallet-bal-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--P),var(--S))}
+.wbc-label{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.wbc-amount{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;color:var(--text);line-height:1;margin-bottom:4px}
+.wbc-sub{font-size:11px;color:var(--text3)}
+.wbc-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.07)}
+.wbc-stat{text-align:center}
+.wbc-sv{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:2px}
+.wbc-sl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+.pay-details{background:var(--bg4);border:1px solid var(--border2);border-radius:var(--radius);padding:14px;margin:13px 0}
+.pd-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
+.pd-row:last-child{border-bottom:none}
+.pd-label{color:var(--text3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.pd-val{color:var(--text);font-weight:600}
+.ref-box{background:var(--bg5);border:1px solid rgba(91,110,245,0.3);border-radius:var(--radius);padding:10px 13px;margin:10px 0;display:flex;align-items:center;justify-content:space-between;gap:9px}
+.ref-code{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--P2);letter-spacing:1px}
+.cost-calc{background:var(--bg4);border:1px solid var(--border);border-radius:var(--radius);padding:13px;margin:11px 0}
+.cc-row{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--text2)}
+.cc-row.total{border-top:1px solid var(--border);margin-top:6px;padding-top:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text)}
+.cc-row.after{font-size:11px;color:var(--text3)}
+.cc-row.insufficient{color:var(--danger)}
+.wtx-item{display:flex;align-items:center;gap:10px;padding:9px 13px;border-bottom:1px solid var(--border)}
+.wtx-item:last-child{border-bottom:none}
+.wtx-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.wtx-desc{font-size:12px;font-weight:500;color:var(--text);flex:1}
+.wtx-sub{font-size:10px;color:var(--text3);margin-top:1px}
+.wtx-amt{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.pending-badge{display:inline-flex;align-items:center;gap:5px;background:var(--wdim);border:1px solid rgba(245,158,11,0.25);border-radius:var(--radius);padding:8px 13px;font-size:11px;color:var(--warning);margin-top:9px}
+.wallet-mini{background:var(--bg4);border:1px solid var(--border);border-radius:var(--radius);padding:9px 12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wm-bal{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--P2)}
+.wm-lbl{font-size:10px;color:var(--text3)}
 /* ── MOBILE DRAWER ── */
 .hamburger{display:none;flex-direction:column;justify-content:center;gap:4px;width:34px;height:34px;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--radius);cursor:pointer;padding:0 8px;flex-shrink:0;transition:all 0.2s}
 .hamburger:hover{border-color:var(--P)}
@@ -295,18 +338,17 @@ tbody tr:hover td{background:rgba(255,255,255,0.015);color:var(--text)}
 <!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-card">
-    <div class="auth-brand">School<span>Core</span></div>
+    <div class="auth-brand"><i class="fas fa-graduation-cap"></i> School<span>Core</span></div>
     <div class="auth-sub">School Admin Portal</div>
     <h2>Welcome back</h2>
     <p>Sign in to manage your school platform.</p>
-    <div class="fg"><label>Email</label><input type="email" id="a-email" placeholder="admin@school.ng" autofocus/></div>
-    <div class="fg"><label>Password</label><input type="password" id="a-pass" placeholder="••••••••"/></div>
+    <div class="fg"><label>Email</label><input type="email" id="a-email" placeholder="admin@school.ng" autofocus /></div>
+    <div class="fg"><label>Password</label><input type="password" id="a-pass" placeholder="••••••••" /></div>
     <div id="a-err" style="font-size:11px;color:var(--danger);margin-bottom:9px;display:none"></div>
     <button class="btn bp bfull" id="a-btn">Sign In</button>
-    <p style="text-align:center;margin-top:13px;font-size:11px;color:var(--text3)">No account? <a href="school_register.html" style="color:var(--P2);text-decoration:none">Register your school →</a></p>
+    <p style="text-align:center;margin-top:13px;font-size:11px;color:var(--text3)">No account? <a href="/register/index.html" style="color:var(--P2);text-decoration:none">Register your school →</a></p>
   </div>
 </div>
-
 <!-- APP -->
 <div id="app">
 <div class="shell">
@@ -344,6 +386,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.015);color:var(--text)}
     <div class="ni" data-page="results"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Results<span class="nb warn" id="nb-pend" style="display:none">0</span></div>
     <div class="ni" data-page="pins"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2"/></svg>Scratch Pins</div>
     <div class="ni" data-page="fees"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>School Fees<span class="nb danger" id="nb-debtors" style="display:none">!</span></div>
+    <div class="ni" data-page="wallet"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>Wallet<span class="nb" id="nb-wallet" style="display:none;background:var(--warning);color:#1A0A00">!</span></div>
   </div>
   <div class="ns">
     <div class="nl">Records</div>
@@ -385,7 +428,7 @@ tbody tr:hover td{background:rgba(255,255,255,0.015);color:var(--text)}
         <div class="sc" style="--c:var(--info)"><div class="lbl">Pins Left</div><div class="val" id="d-pins">0</div><div class="sub">Result pins</div><div class="ico">🔑</div></div>
         <div class="sc" style="--c:var(--S)"><div class="lbl">Published</div><div class="val" id="d-pub">0</div><div class="sub">Students can view</div><div class="ico">✅</div></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:13px">
+      <div style="display:grid;gap:13px">
         <div class="tbl"><div class="tbl-bar"><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700">Quick Actions</span></div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:13px">
             <button class="btn bs" onclick="goPage('students')">➕ Add Student</button>
@@ -573,15 +616,100 @@ tbody tr:hover td{background:rgba(255,255,255,0.015);color:var(--text)}
 
     <!-- ══ PINS ══ -->
     <div class="page" id="page-pins">
-      <div class="shdr"><div><h3>Result Scratch Pins</h3></div></div>
-      <div class="tbl" style="padding:17px;margin-bottom:14px">
-        <h4 style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:13px;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px">Generate New Batch</h4>
-        <div class="fr"><div class="fg" style="margin:0"><label>Session</label><select id="pin-sess"></select></div><div class="fg" style="margin:0"><label>Term</label><select id="pin-term"></select></div></div>
-        <div class="fg" style="margin-top:9px"><label>Quantity (max 500)</label><input type="number" id="pin-qty" value="50" min="1" max="500"/></div>
-        <div style="background:var(--Sglow);border:1px solid rgba(240,192,64,0.2);border-radius:var(--radius);padding:9px 12px;font-size:11px;color:var(--text2);margin-bottom:11px">💰 Each result pin costs <strong style="color:var(--S)">₦100</strong>. Students use these to unlock results and view them in the student portal permanently.</div>
-        <button class="btn bp" id="gen-pins-btn">Generate Result Pins</button>
+      <div class="shdr"><div><h3>Scratch Pins</h3><p>Generate result and fee pins — deducted from your wallet balance</p></div><button class="btn bs bsm" onclick="goPage('wallet')">💰 Fund Wallet</button></div>
+
+      <!-- Wallet mini balance strip -->
+      <div class="wallet-mini">
+        <div><div class="wm-lbl">Available Wallet Balance</div><div class="wm-bal" id="pins-wallet-bal">₦0</div></div>
+        <button class="btn bsc bsm" onclick="goPage('wallet')">Manage Wallet →</button>
       </div>
-      <div class="tbl"><div class="tbl-bar"><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700">Pin Inventory</span><span class="badge b-gr" id="pin-count-lbl">0</span><select class="tsel" id="pin-filter" style="margin-left:auto"><option value="">All</option><option value="unused">Unused</option><option value="used">Used</option></select></div><div id="pins-grid" class="pin-grid"></div></div>
+
+      <!-- Tabs -->
+      <div class="tabs" style="margin-bottom:16px">
+        <div class="tab active" data-pintab="result" onclick="switchPinTab('result')">Result Pins</div>
+        <div class="tab" data-pintab="fee" onclick="switchPinTab('fee')">Fee Pins</div>
+      </div>
+
+      <!-- RESULT PINS -->
+      <div id="pintab-result">
+        <div class="tbl" style="padding:17px;margin-bottom:14px">
+          <h4 style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:13px;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px">Generate Result Pin Batch</h4>
+          <div class="fr"><div class="fg" style="margin:0"><label>Session</label><select id="pin-sess"></select></div><div class="fg" style="margin:0"><label>Term</label><select id="pin-term"></select></div></div>
+          <div class="fg" style="margin-top:9px"><label>Quantity (max 500)</label><input type="number" id="pin-qty" value="50" min="1" max="500" oninput="updatePinCost()"/></div>
+          <!-- Cost calculator -->
+          <div class="cost-calc" id="pin-cost-calc">
+            <div class="cc-row"><span>Price per pin</span><span>₦850</span></div>
+            <div class="cc-row"><span>Quantity</span><span id="cc-qty">50</span></div>
+            <div class="cc-row total"><span>Total Cost</span><span id="cc-total">₦42,500</span></div>
+            <div class="cc-row after"><span>Wallet balance</span><span id="cc-bal">₦0</span></div>
+            <div class="cc-row after" id="cc-after-row"><span>Balance after generation</span><span id="cc-after">—</span></div>
+            <div id="cc-insufficient" style="display:none;margin-top:8px;padding:8px 10px;background:var(--ddim);border:1px solid rgba(239,68,68,0.25);border-radius:var(--radius);font-size:11px;color:var(--danger)">⚠️ Insufficient balance. <span id="cc-shortfall"></span> needed. <a href="#" onclick="goPage('wallet');return false" style="color:var(--danger);font-weight:700;text-decoration:underline">Fund your wallet →</a></div>
+          </div>
+          <button class="btn bp" id="gen-pins-btn">Generate Result Pins</button>
+        </div>
+        <div class="tbl"><div class="tbl-bar"><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700">Result Pin Inventory</span><span class="badge b-gr" id="pin-count-lbl">0</span><select class="tsel" id="pin-filter" style="margin-left:auto"><option value="">All</option><option value="unused">Unused</option><option value="used">Used</option></select></div><div id="pins-grid" class="pin-grid"></div></div>
+      </div>
+
+      <!-- FEE PINS (moved here from fees page) -->
+      <div id="pintab-fee" style="display:none">
+        <div class="ibox"><strong>How fee pins work:</strong> Generate a pin, assign it to a student for a specific amount. The parent pays you cash, you generate the pin. Parent enters it in the student portal to record the payment. Each pin costs <strong>₦850</strong> from your wallet.</div>
+        <div class="tbl" style="padding:18px;margin-bottom:14px">
+          <h4 style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;margin-bottom:13px;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px">Generate Fee Pin</h4>
+          <div class="fr"><div class="fg" style="margin:0"><label>Assign to Student ✱</label><select id="fee-pin-stu2"></select></div><div class="fg" style="margin:0"><label>Session</label><select id="fee-pin-sess2"></select></div></div>
+          <div class="fr" style="margin-top:9px"><div class="fg" style="margin:0"><label>Payment Amount (₦) ✱</label><input type="number" id="fee-pin-amount2" placeholder="10000" min="1"/></div><div class="fg" style="margin:0"><label>Payment Note</label><input id="fee-pin-note2" placeholder="e.g. First term fees"/></div></div>
+          <!-- Fee pin cost strip -->
+          <div class="cost-calc" style="margin-bottom:11px">
+            <div class="cc-row"><span>Pin generation cost</span><span>₦850 (1 pin)</span></div>
+            <div class="cc-row after"><span>Wallet balance</span><span id="fp-bal">₦0</span></div>
+            <div id="fp-insufficient" style="display:none;padding:8px 10px;background:var(--ddim);border:1px solid rgba(239,68,68,0.25);border-radius:var(--radius);font-size:11px;color:var(--danger);margin-top:6px">⚠️ Insufficient balance. <a href="#" onclick="goPage('wallet');return false" style="color:var(--danger);font-weight:700;text-decoration:underline">Fund your wallet →</a></div>
+          </div>
+          <button class="btn bp" id="gen-fee-pin-btn2">Generate Fee Pin</button>
+          <div id="fee-pin-result2" style="display:none;background:var(--sdim);border:1px solid rgba(34,197,94,0.2);border-radius:var(--radius2);padding:16px;margin-top:13px;text-align:center">
+            <div style="font-size:11px;color:var(--text2);margin-bottom:6px">Fee payment pin generated</div>
+            <div id="fee-pin-display2" style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--P2);letter-spacing:3px"></div>
+            <div id="fee-pin-info2" style="font-size:11px;color:var(--text2);margin-top:6px"></div>
+            <button class="btn bs bsm" style="margin-top:9px" onclick="copyText(document.getElementById('fee-pin-display2').textContent)">Copy Pin</button>
+          </div>
+        </div>
+        <div class="tbl">
+          <div class="tbl-bar"><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700">Recent Fee Pins</span></div>
+          <table><thead><tr><th>Pin</th><th>Student</th><th>Amount</th><th>Note</th><th>Status</th></tr></thead><tbody id="fee-pins-tbody2"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WALLET ══ -->
+    <div class="page" id="page-wallet">
+      <div class="shdr"><div><h3>School Wallet</h3><p>Fund your wallet to generate result and fee pins</p></div><button class="btn bp" onclick="openFundWallet()">+ Fund Wallet</button></div>
+
+      <!-- Balance card -->
+      <div class="wallet-bal-card">
+        <div class="wbc-label">Available Balance</div>
+        <div class="wbc-amount" id="w-balance">₦0</div>
+        <div class="wbc-sub">Ready to spend on pin generation</div>
+        <div class="wbc-stats">
+          <div class="wbc-stat"><div class="wbc-sv" style="color:var(--success)" id="w-deposited">₦0</div><div class="wbc-sl">Total Deposited</div></div>
+          <div class="wbc-stat"><div class="wbc-sv" style="color:var(--danger)" id="w-spent">₦0</div><div class="wbc-sl">Total Spent</div></div>
+          <div class="wbc-stat"><div class="wbc-sv" style="color:var(--warning)" id="w-pending">₦0</div><div class="wbc-sl">Pending Approval</div></div>
+        </div>
+      </div>
+
+      <!-- Pending deposit notice -->
+      <div id="w-pending-notice" style="display:none">
+        <div class="pending-badge">⏳ You have a pending deposit waiting for admin approval. Your balance will update once approved.</div>
+      </div>
+
+      <!-- How it works -->
+      <div class="ibox" style="margin-top:13px"><strong>How the wallet works:</strong> Enter an amount → Pay to the SchoolCore bank account shown → Click "I Have Paid" → Our team confirms your transfer → Your balance is credited automatically. Use your balance to generate result and fee pins at <strong>₦850 per pin</strong>.</div>
+
+      <!-- Transaction history -->
+      <div class="tbl" style="margin-top:3px">
+        <div class="tbl-bar" style="justify-content:space-between">
+          <span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700">Transaction History</span>
+          <button class="btn bs bsm" onclick="loadWallet()">↻ Refresh</button>
+        </div>
+        <div id="w-tx-list"><div class="empty"><p>No transactions yet</p></div></div>
+      </div>
     </div>
 
     <!-- ══ FEES ══ -->
@@ -816,13 +944,119 @@ tbody tr:hover td{background:rgba(255,255,255,0.015);color:var(--text)}
   <div class="fg"><label>Message</label><textarea id="m-msg-body" style="min-height:80px" placeholder="Type your message..."></textarea></div>
 </div><div class="mfoot"><button class="btn bs" data-close="m-msg-new">Cancel</button><button class="btn bp" id="m-msg-send-btn">Send</button></div></div></div>
 
+<!-- MOBILE DRAWER BACKDROP -->
+<div class="drawer-backdrop" id="mob-backdrop" onclick="toggleDrawer()"></div>
+
+<!-- MOBILE DRAWER -->
+<div class="drawer" id="mob-drawer">
+  <div class="drawer-top">
+    <div class="drawer-brand">School<span>Core</span></div>
+    <div class="drawer-close" onclick="toggleDrawer()">✕</div>
+  </div>
+
+  <!-- School card -->
+  <div class="drawer-school" onclick="goPage('settings');toggleDrawer()">
+    <div class="drawer-school-logo" id="d-logo">SC</div>
+    <div class="drawer-sn" id="d-sn">Loading...</div>
+    <div class="drawer-st" id="d-st">—</div>
+    <div class="drawer-plan" id="d-plan">FREE</div>
+  </div>
+
+  <!-- Nav sections -->
+  <div class="drawer-ns">
+    <div class="drawer-nl">Overview</div>
+    <div class="drawer-ni active" data-page="dashboard">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </div>
+  </div>
+  <div class="drawer-ns">
+    <div class="drawer-nl">Setup</div>
+    <div class="drawer-ni" data-page="sessions"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Sessions & Terms</div>
+    <div class="drawer-ni" data-page="classes"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Classes & Arms</div>
+    <div class="drawer-ni" data-page="subjects"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Subjects</div>
+    <div class="drawer-ni" data-page="grading"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Grading Config</div>
+    <div class="drawer-ni" data-page="timetable"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="9" y1="10" x2="9" y2="22"/><line x1="15" y1="10" x2="15" y2="22"/></svg>Timetable</div>
+    <div class="drawer-ni" data-page="calendar"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>Academic Calendar</div>
+  </div>
+  <div class="drawer-ns">
+    <div class="drawer-nl">People</div>
+    <div class="drawer-ni" data-page="students"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Students</div>
+    <div class="drawer-ni" data-page="teachers"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>Teachers</div>
+  </div>
+  <div class="drawer-ns">
+    <div class="drawer-nl">Academics</div>
+    <div class="drawer-ni" data-page="results"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Results</div>
+    <div class="drawer-ni" data-page="pins"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2"/></svg>Scratch Pins</div>
+    <div class="drawer-ni" data-page="fees"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>School Fees</div>
+    <div class="drawer-ni" data-page="wallet"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/></svg>Wallet</div>
+  </div>
+  <div class="drawer-ns">
+    <div class="drawer-nl">Records</div>
+    <div class="drawer-ni" data-page="awards"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Awards</div>
+    <div class="drawer-ni" data-page="announcements"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 17H2a3 3 0 000 6h20v-6z"/><path d="M10.2 17L15 4.55a1 1 0 011.8 0L21.8 17"/></svg>Announcements</div>
+    <div class="drawer-ni" data-page="messages"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Messages</div>
+  </div>
+  <div class="drawer-ns">
+    <div class="drawer-nl">System</div>
+    <div class="drawer-ni" data-page="settings"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</div>
+    <div class="drawer-ni" data-page="directory"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>School Directory</div>
+    <div class="drawer-ni" data-page="audit"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Audit Log</div>
+  </div>
+
+  <!-- Footer -->
+  <div class="drawer-foot">
+    <div class="drawer-admin">
+      <div class="drawer-av" id="d-av">A</div>
+      <div><div class="drawer-an" id="d-an">Admin</div><div class="drawer-ar">School Administrator</div></div>
+    </div>
+    <button class="drawer-out" id="drawer-logout-btn">Sign Out</button>
+  </div>
+</div>
+
+<!-- ══ FUND WALLET MODAL ══ -->
+<div class="overlay" id="m-fund-wallet">
+  <div class="modal">
+    <div class="mhdr"><h3>💰 Fund Your Wallet</h3><div class="mx" data-close="m-fund-wallet">✕</div></div>
+    <div class="mbody">
+      <div class="fg"><label>Amount to Deposit (₦)</label><input type="number" id="fw-amount" placeholder="e.g. 17000" min="1" oninput="updateFundCalc()"/></div>
+      <div id="fw-calc" style="display:none">
+        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:var(--radius);padding:10px 13px;font-size:11px;margin-bottom:13px;color:var(--text2)">
+          This will give you <strong id="fw-pins" style="color:var(--P2)">0 pins</strong> (at ₦850 per pin)
+        </div>
+      </div>
+      <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Pay to this account:</div>
+      <div id="fw-bank-loading" style="text-align:center;padding:18px;color:var(--text3);font-size:12px"><div class="spin" style="margin:0 auto 6px"></div>Loading bank details...</div>
+      <div id="fw-bank-details" style="display:none">
+        <div class="pay-details">
+          <div class="pd-row"><span class="pd-label">Bank</span><span class="pd-val" id="fw-bank-name">—</span></div>
+          <div class="pd-row"><span class="pd-label">Account Number</span><span class="pd-val" id="fw-acct-num" style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--P2);letter-spacing:1px">—</span></div>
+          <div class="pd-row"><span class="pd-label">Account Name</span><span class="pd-val" id="fw-acct-name">—</span></div>
+          <div class="pd-row"><span class="pd-label">Amount</span><span class="pd-val" id="fw-pay-amount" style="color:var(--success);font-weight:700">—</span></div>
+        </div>
+        <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Your Payment Reference:</div>
+        <div class="ref-box">
+          <span class="ref-code" id="fw-ref-code">—</span>
+          <button class="btn bs bsm" onclick="copyText(document.getElementById('fw-ref-code').textContent)">Copy</button>
+        </div>
+        <div class="wbox"><strong>Important:</strong> You MUST use the reference above when making your transfer. This is how we match your payment to your account. Without the correct reference, approval may be delayed.</div>
+        <div class="fg"><label>Payment Screenshot URL (optional)</label><input type="url" id="fw-screenshot" placeholder="Paste link to screenshot if available"/></div>
+      </div>
+      <div id="fw-bank-error" style="display:none;color:var(--danger);font-size:12px;padding:10px">Could not load bank details. Please contact support.</div>
+    </div>
+    <div class="mfoot">
+      <button class="btn bs" data-close="m-fund-wallet">Cancel</button>
+      <button class="btn bp" id="fw-submit-btn" disabled onclick="submitWalletFunding()"><div class="spin" style="display:none" id="fw-spin"></div> I Have Paid — Submit</button>
+    </div>
+  </div>
+</div>
+
 <div id="toasts"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getDatabase, ref, set, get, push, update, remove, onValue, off } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-import { getStorage, ref as sRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDh2RTAaezQ-XpoS7ZdjAQAKkwwelm41Qo",
@@ -838,11 +1072,12 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 const auth = getAuth(fbApp);
 const db = getDatabase(fbApp);
-const storage = getStorage(fbApp);
 
 let SCHOOL_ID = null, SCHOOL = null;
 let S = { sessions:{}, terms:{}, classes:{}, arms:{}, subjects:{}, teachers:{}, gradingConfig:null, context:{}, announcements:{}, rawResults:{}, processedResults:{}, pins:{} };
 let STUDENTS = {}, ALUMNI = {};
+let WALLET = {balance:0, totalDeposited:0, totalSpent:0, pendingDeposit:0};
+const PIN_PRICE = 850;
 let TT_DATA = {}, TT_CLASS_ID = null, TT_ARM_ID = null;
 let ACTIVE_CHAT = null;
 let MSG_LISTENER = null;
@@ -865,9 +1100,47 @@ function toast(title,sub="",type="info"){
   c.appendChild(t);setTimeout(()=>{t.classList.add("rm");setTimeout(()=>t.remove(),250)},4000);
 }
 window.copyText=v=>{navigator.clipboard.writeText(v).then(()=>toast("Copied!","","success"));};
-window.addEventListener("unhandledrejection",e=>{console.error(e.reason);toast("Action failed",e.reason?.message||String(e.reason||"Please try again"),"error");});
 
-// ════ AUTH ════
+// ════ BACKEND API HELPER ════
+// All privileged writes go through this single function.
+// Frontend never writes directly to Firebase — only reads.
+const API_URL = '/.netlify/functions/api';
+
+async function callAPI(action, data = {}) {
+  const user = auth.currentUser;
+  if (!user) throw new Error('Not authenticated. Please sign in again.');
+
+  // Always fetch a fresh token (auto-refreshes if within 5 min of expiry)
+  const token = await user.getIdToken(false);
+
+  const res = await fetch(API_URL, {
+    method:  'POST',
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ action, data }),
+  });
+
+  const json = await res.json();
+
+  // Propagate backend error messages as JS errors so callers can catch them
+  if (!json.success) {
+    const err = new Error(json.error || 'API request failed');
+    err.code = json.code || 'API_ERROR';
+    throw err;
+  }
+
+  return json;
+}
+
+// Disable a button and show spinner, return restore function
+function btnLoading(btn, label = 'Saving...') {
+  const orig = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = `<div class="spin"></div> ${label}`;
+  return () => { btn.disabled = false; btn.innerHTML = orig; };
+}
 document.getElementById("a-btn").addEventListener("click",handleLogin);
 document.getElementById("a-pass").addEventListener("keydown",e=>{if(e.key==="Enter")handleLogin();});
 async function handleLogin(){
@@ -896,6 +1169,7 @@ async function initApp(user){
   const app=document.getElementById("app");app.style.display="flex";app.style.flexDirection="column";
   setupSidebar(user);setupPortalBar();
   await loadAll();
+  await loadWallet();
   loadMessages();
   goPage("dashboard");
 }
@@ -950,11 +1224,11 @@ async function loadSchoolStudents(){
 function renderAll(){
   renderDashboard();renderSessions();renderClasses();renderSubjects();renderGrading();
   renderStudents();renderTeachers();renderPins();renderAwards();renderAnnouncements();renderSettings();renderCalendar();renderDirectorySettings();
-  populateSelects();updateIdPreview();renderSidebarCtx();
+  populateSelects();updateIdPreview();renderSidebarCtx();renderWalletBalance();
 }
 
 // ════ NAV ════
-const titles={dashboard:"Dashboard",sessions:"Sessions & Terms",classes:"Classes & Arms",subjects:"Subjects",grading:"Grading Config",timetable:"Timetable",calendar:"Academic Calendar",students:"Students",teachers:"Teachers",results:"Results",pins:"Result Scratch Pins",fees:"School Fees",awards:"Awards",announcements:"Announcements",messages:"Messages",settings:"Settings",directory:"School Directory",audit:"Audit Log"};
+const titles={dashboard:"Dashboard",sessions:"Sessions & Terms",classes:"Classes & Arms",subjects:"Subjects",grading:"Grading Config",timetable:"Timetable",calendar:"Academic Calendar",students:"Students",teachers:"Teachers",results:"Results",pins:"Scratch Pins",fees:"School Fees",wallet:"School Wallet",awards:"Awards",announcements:"Announcements",messages:"Messages",settings:"Settings",directory:"School Directory",audit:"Audit Log"};
 function goPage(id){
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll(".ni").forEach(n=>n.classList.remove("active"));
@@ -966,6 +1240,8 @@ function goPage(id){
   if(id==="fees")loadFeeData();
   if(id==="timetable")renderTimetablePage();
   if(id==="messages")renderChatList();
+  if(id==="wallet")renderWallet();
+  if(id==="pins"){updatePinCost();renderFeePins2();}
 }
 window.goPage=goPage;
 document.querySelectorAll(".ni[data-page]").forEach(n=>n.addEventListener("click",()=>goPage(n.dataset.page)));
@@ -977,42 +1253,183 @@ window.closeModal=closeModal;
 document.querySelectorAll("[data-close]").forEach(el=>el.addEventListener("click",()=>closeModal(el.dataset.close)));
 document.querySelectorAll(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)o.classList.remove("open");}));
 
-// ════ FIREBASE STORAGE UPLOAD ════
-async function uploadFile(file,path,progEl,fillEl,previewEl,iconEl){
-  return new Promise((resolve,reject)=>{
-    const storageRef=sRef(storage,path);const task=uploadBytesResumable(storageRef,file);
-    if(progEl)progEl.style.display="block";
-    task.on("state_changed",snap=>{const pct=(snap.bytesTransferred/snap.totalBytes)*100;if(fillEl)fillEl.style.width=pct+"%";},err=>reject(err),async()=>{
-      const url=await getDownloadURL(task.snapshot.ref);
-      if(progEl)progEl.style.display="none";if(previewEl){previewEl.src=url;previewEl.classList.add("show");}
-      if(iconEl)iconEl.style.display="none";resolve(url);
-    });
+// ════ IMAGE COMPRESSION & BASE64 UPLOAD ════
+async function uploadFile(file, path, progEl, fillEl, previewEl, iconEl) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      reject(new Error("No file provided"));
+      return;
+    }
+    
+    if (file.size > 2 * 1024 * 1024) {
+      reject(new Error("File exceeds 2MB limit"));
+      return;
+    }
+    
+    if (progEl) progEl.style.display = "block";
+    
+    // Compress image first
+    compressImageToBase64(file)
+      .then(base64 => {
+        if (fillEl) fillEl.style.width = "100%";
+        if (previewEl) {
+          previewEl.src = base64;
+          previewEl.classList.add("show");
+        }
+        if (iconEl) iconEl.style.display = "none";
+        if (progEl) progEl.style.display = "none";
+        
+        resolve(base64); // ✅ Return base64 string
+      })
+      .catch(err => {
+        if (progEl) progEl.style.display = "none";
+        reject(err);
+      });
+  });
+}
+
+// ✅ NEW: Compress and convert to base64
+async function compressImageToBase64(file, maxWidth = 800, quality = 0.7) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      const img = new Image();
+      
+      img.onload = () => {
+        try {
+          // Calculate new dimensions
+          const ratio = Math.min(1, maxWidth / img.width);
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * ratio);
+          canvas.height = Math.round(img.height * ratio);
+          
+          // Draw compressed image
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          
+          // Convert to base64
+          const base64 = canvas.toDataURL('image/jpeg', quality);
+          resolve(base64);
+        } catch (err) {
+          reject(err);
+        }
+      };
+      
+      img.onerror = () => reject(new Error('Image load failed'));
+      img.src = e.target.result;
+    };
+    
+    reader.onerror = () => reject(new Error('File read failed'));
+    reader.readAsDataURL(file);
   });
 }
 
 // Logo upload
-document.getElementById("logo-file").addEventListener("change",async function(){
-  const file=this.files[0];if(!file)return;if(file.size>2*1024*1024){toast("File too large","Max 2MB","error");return;}
+document.getElementById("logo-file").addEventListener("change", async function() {
+  const file = this.files[0];
+  if (!file) return;
+  
+  if (file.size > 2 * 1024 * 1024) {
+    toast("File too large", "Max 2MB", "error");
+    return;
+  }
+  
   document.getElementById("logo-area").classList.add("has-image");
-  try{const url=await uploadFile(file,`logos/${SCHOOL_ID}`,document.getElementById("logo-prog"),document.getElementById("logo-fill"),document.getElementById("logo-preview"),document.getElementById("logo-icon"));await update(schoolRef(),{logoUrl:url});SCHOOL.logoUrl=url;const lb=document.getElementById("sb-logo");lb.innerHTML=`<img src="${url}" alt="logo"/>`;toast("Logo uploaded!","","success");}
-  catch(e){toast("Upload failed",e.message,"error");}
+  
+  try {
+    const base64 = await uploadFile(
+      file,
+      null,
+      document.getElementById("logo-prog"),
+      document.getElementById("logo-fill"),
+      document.getElementById("logo-preview"),
+      document.getElementById("logo-icon")
+    );
+    
+    // Save base64 to database
+    await update(schoolRef(), {
+      logoUrl: base64,
+      logoUpdatedAt: Date.now()
+    });
+    
+    SCHOOL.logoUrl = base64;
+    const lb = document.getElementById("sb-logo");
+    lb.innerHTML = `<img src="${base64}" alt="logo" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
+    
+    toast("Logo uploaded!", "", "success");
+  } catch (e) {
+    console.error("Logo upload error:", e);
+    toast("Upload failed", e.message, "error");
+  }
 });
 
 // Principal signature
-document.getElementById("sig-file").addEventListener("change",async function(){
-  const file=this.files[0];if(!file)return;if(file.size>2*1024*1024){toast("File too large","Max 2MB","error");return;}
+document.getElementById("sig-file").addEventListener("change", async function() {
+  const file = this.files[0];
+  if (!file) return;
+  
+  if (file.size > 2 * 1024 * 1024) {
+    toast("File too large", "Max 2MB", "error");
+    return;
+  }
+  
   document.getElementById("sig-area").classList.add("has-image");
-  try{const url=await uploadFile(file,`signatures/principals/${SCHOOL_ID}`,document.getElementById("sig-prog"),document.getElementById("sig-fill"),document.getElementById("sig-preview"),document.getElementById("sig-icon"));await update(schoolRef(),{principalSignatureUrl:url});SCHOOL.principalSignatureUrl=url;toast("Signature uploaded!","Appears on all result slips","success");}
-  catch(e){toast("Upload failed",e.message,"error");}
+  
+  try {
+    const base64 = await uploadFile(
+      file,
+      null,
+      document.getElementById("sig-prog"),
+      document.getElementById("sig-fill"),
+      document.getElementById("sig-preview"),
+      document.getElementById("sig-icon")
+    );
+    
+    await update(schoolRef(), {
+      principalSignatureUrl: base64,
+      signatureUpdatedAt: Date.now()
+    });
+    
+    SCHOOL.principalSignatureUrl = base64;
+    toast("Signature uploaded!", "Appears on all result slips", "success");
+  } catch (e) {
+    console.error("Signature upload error:", e);
+    toast("Upload failed", e.message, "error");
+  }
 });
 
 // Student photo
-document.getElementById("stu-photo-file").addEventListener("change",async function(){
-  const file=this.files[0];if(!file)return;if(file.size>2*1024*1024){toast("File too large","Max 2MB","error");return;}
-  const tempId=`temp_${Date.now()}`;document.getElementById("stu-photo-area").classList.add("has-image");
-  try{const url=await uploadFile(file,`students/${SCHOOL_ID}/${tempId}`,document.getElementById("stu-photo-prog"),document.getElementById("stu-photo-fill"),document.getElementById("stu-photo-preview"),document.getElementById("stu-photo-icon"));document.getElementById("stu-photo-area").dataset.photoUrl=url;toast("Photo ready","Saved when student is created","info");}
-  catch(e){toast("Upload failed",e.message,"error");}
+document.getElementById("stu-photo-file").addEventListener("change", async function() {
+  const file = this.files[0];
+  if (!file) return;
+  
+  if (file.size > 2 * 1024 * 1024) {
+    toast("File too large", "Max 2MB", "error");
+    return;
+  }
+  
+  const tempId = `temp_${Date.now()}`;
+  document.getElementById("stu-photo-area").classList.add("has-image");
+  
+  try {
+    const base64 = await uploadFile(
+      file,
+      null,
+      document.getElementById("stu-photo-prog"),
+      document.getElementById("stu-photo-fill"),
+      document.getElementById("stu-photo-preview"),
+      document.getElementById("stu-photo-icon")
+    );
+    
+    document.getElementById("stu-photo-area").dataset.photoUrl = base64;
+    toast("Photo ready", "Saved when student is created", "info");
+  } catch (e) {
+    console.error("Photo upload error:", e);
+    toast("Upload failed", e.message, "error");
+  }
 });
+
 
 // ════ SIDEBAR CONTEXT ════
 function renderSidebarCtx(){
@@ -1044,9 +1461,8 @@ async function renderDashAudit(){
 }
 
 // ════ HELPERS ════
-function genId(prefix){return `${prefix}${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).slice(2,6).toUpperCase()}`;}
+function genId(prefix){return `${prefix}${Date.now().toString(36).toUpperCase()}`;}
 function genKey(code){const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let k=(code||"TCH").substring(0,3)+"-";for(let i=0;i<6;i++)k+=c[Math.floor(Math.random()*c.length)];return k;}
-function genPassword(prefix="PWD"){const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let k=prefix+"-";for(let i=0;i<8;i++)k+=c[Math.floor(Math.random()*c.length)];return k;}
 function genPin(){const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let p="";for(let i=0;i<12;i++){if(i===4||i===8)p+="-";p+=c[Math.floor(Math.random()*c.length)];}return p;}
 function fmt(n,currency="NGN"){try{return new Intl.NumberFormat("en-NG",{style:"currency",currency,minimumFractionDigits:0}).format(n||0);}catch{return `${n||0}`;}}
 function getGrade(total){const bands=S.gradingConfig?.bands||gradeBands;for(const b of bands)if(total>=b.min&&total<=b.max)return{grade:b.grade,remark:b.remark};return{grade:"F",remark:"Fail"};}
@@ -1067,15 +1483,28 @@ document.getElementById("add-sess-btn").addEventListener("click",()=>openModal("
 document.getElementById("add-term-btn").addEventListener("click",()=>openModal("m-term"));
 document.getElementById("save-sess-btn").addEventListener("click",async()=>{
   const name=document.getElementById("sess-name").value.trim();if(!name){toast("Name required","","error");return;}
-  const id=genId("SESS");await set(ir("sessions",id),{name,year:document.getElementById("sess-year").value,createdAt:Date.now()});S.sessions[id]={name};closeModal("m-sess");document.getElementById("sess-name").value="";renderSessions();populateSelects();await auditLog("Session created",name);toast("Session added",name,"success");
+  const btn=document.getElementById("save-sess-btn");const restore=btnLoading(btn,"Saving...");
+  try{
+    const res=await callAPI("createSession",{name,year:document.getElementById("sess-year").value});
+    S.sessions[res.id]={name:res.name};closeModal("m-sess");document.getElementById("sess-name").value="";renderSessions();populateSelects();toast("Session added",name,"success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 document.getElementById("save-term-btn").addEventListener("click",async()=>{
-  const name=document.getElementById("term-name").value;const id=genId("TERM");await set(ir("terms",id),{name,createdAt:Date.now()});S.terms[id]={name};closeModal("m-term");renderSessions();populateSelects();toast("Term added",name,"success");
+  const name=document.getElementById("term-name").value.trim();if(!name){toast("Name required","","error");return;}
+  const btn=document.getElementById("save-term-btn");const restore=btnLoading(btn);
+  try{
+    const res=await callAPI("createTerm",{name});
+    S.terms[res.id]={name:res.name};closeModal("m-term");renderSessions();populateSelects();toast("Term added",name,"success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 document.getElementById("save-ctx-btn").addEventListener("click",async()=>{
   const sessionId=document.getElementById("ctx-sess").value;const termId=document.getElementById("ctx-term").value;
   if(!sessionId||!termId){toast("Select both","","error");return;}
-  await set(ir("context",SCHOOL_ID),{sessionId,termId,updatedAt:Date.now()});S.context={[SCHOOL_ID]:{sessionId,termId}};renderSidebarCtx();await auditLog("Context updated",`${S.sessions[sessionId]?.name} · ${S.terms[termId]?.name}`);toast("Context saved","","success");
+  const btn=document.getElementById("save-ctx-btn");const restore=btnLoading(btn);
+  try{
+    const res=await callAPI("saveContext",{sessionId,termId});
+    S.context={[SCHOOL_ID]:{sessionId,termId}};renderSidebarCtx();toast("Context saved",res.message||"","success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 function renderSessions(){
   const sl=document.getElementById("sessions-list");const te=Object.entries(S.sessions||{});
@@ -1089,11 +1518,19 @@ document.getElementById("add-cls-btn").addEventListener("click",()=>openModal("m
 document.getElementById("add-arm-btn").addEventListener("click",()=>openModal("m-arm"));
 document.getElementById("save-cls-btn").addEventListener("click",async()=>{
   const name=document.getElementById("cls-name").value.trim();if(!name){toast("Name required","","error");return;}
-  const id=genId("CLS");await set(ir("classes",id),{name,level:document.getElementById("cls-level").value,createdAt:Date.now()});S.classes[id]={name,level:document.getElementById("cls-level").value};closeModal("m-cls");document.getElementById("cls-name").value="";renderClasses();populateSelects();await auditLog("Class created",name);toast("Class added",name,"success");
+  const btn=document.getElementById("save-cls-btn");const restore=btnLoading(btn);
+  try{
+    const res=await callAPI("createClass",{name,level:document.getElementById("cls-level").value});
+    S.classes[res.id]={name:res.name,level:res.level||""};closeModal("m-cls");document.getElementById("cls-name").value="";renderClasses();populateSelects();toast("Class added",name,"success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 document.getElementById("save-arm-btn").addEventListener("click",async()=>{
   const name=document.getElementById("arm-name").value.trim();if(!name){toast("Name required","","error");return;}
-  const id=genId("ARM");await set(ir("arms",id),{name,createdAt:Date.now()});S.arms[id]={name};closeModal("m-arm");document.getElementById("arm-name").value="";renderClasses();populateSelects();toast("Arm added",name,"success");
+  const btn=document.getElementById("save-arm-btn");const restore=btnLoading(btn);
+  try{
+    const res=await callAPI("createArm",{name});
+    S.arms[res.id]={name:res.name};closeModal("m-arm");document.getElementById("arm-name").value="";renderClasses();populateSelects();toast("Arm added",name,"success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 function renderClasses(){
   const cl=document.getElementById("classes-list");const ce=Object.entries(S.classes||{});
@@ -1101,7 +1538,30 @@ function renderClasses(){
   const al=document.getElementById("arms-list");const ae=Object.entries(S.arms||{});
   al.innerHTML=ae.length?ae.map(([id,a])=>`<div class="si"><div class="sin">Arm ${a.name}</div><button class="btn bd bsm" onclick="delItem('arms','${id}')">Del</button></div>`).join(""):'<div class="empty"><p>No arms</p></div>';
 }
-window.delItem=async function(col,id){await remove(ir(col,id));delete S[col][id];renderAll();toast("Deleted","","info");};
+
+// delItem routes through callAPI for all collections
+window.delItem=async function(col,id){
+  const actionMap={
+    sessions:'deleteSession',terms:'deleteTerm',classes:'deleteClass',
+    arms:'deleteArm',subjects:'deleteSubject',
+    announcements:'deleteAnnouncement',
+  };
+  const dataKeyMap={
+    sessions:'sessionId',terms:'termId',classes:'classId',
+    arms:'armId',subjects:'subjectId',
+    announcements:'announcementId',
+  };
+  const action=actionMap[col];
+  if(action){
+    try{
+      await callAPI(action,{[dataKeyMap[col]]:id});
+      delete S[col]?.[id];renderAll();toast("Deleted","","info");
+    }catch(e){toast("Could not delete",e.message,"error");}
+  } else {
+    // Fallback for items not yet migrated (calendar events, etc.)
+    await remove(ir(col,id));delete S[col]?.[id];renderAll();toast("Deleted","","info");
+  }
+};
 
 // ════ SUBJECTS ════
 document.getElementById("add-subj-btn").addEventListener("click",()=>{document.getElementById("subj-quick").style.display="block";});
@@ -1109,9 +1569,13 @@ document.getElementById("cancel-subj-btn").addEventListener("click",()=>{documen
 document.getElementById("save-subj-btn").addEventListener("click",async()=>{
   const name=document.getElementById("sn-name").value.trim();const code=document.getElementById("sn-code").value.trim().toUpperCase();
   if(!name||!code){toast("Name and code required","","error");return;}
-  const id=genId("SUBJ");const data={name,code,category:document.getElementById("sn-cat").value,createdAt:Date.now()};
-  await set(ir("subjects",id),data);S.subjects[id]=data;document.getElementById("sn-name").value="";document.getElementById("sn-code").value="";document.getElementById("subj-quick").style.display="none";
-  renderSubjects();populateSelects();await auditLog("Subject created",`${name} (${code})`);toast("Subject added",name,"success");
+  const btn=document.getElementById("save-subj-btn");const restore=btnLoading(btn);
+  try{
+    const res=await callAPI("createSubject",{name,code,category:document.getElementById("sn-cat").value});
+    S.subjects[res.id]={name:res.name,code:res.code,category:res.category};
+    document.getElementById("sn-name").value="";document.getElementById("sn-code").value="";document.getElementById("subj-quick").style.display="none";
+    renderSubjects();populateSelects();toast("Subject added",`${name} (${code})`,"success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 function renderSubjects(){
   const tbody=document.getElementById("subj-tbody");const entries=Object.entries(S.subjects||{});
@@ -1129,8 +1593,12 @@ window.removeGrade=i=>{gradeBands.splice(i,1);renderGrading();};
 document.getElementById("save-grading-btn").addEventListener("click",async()=>{
   const rows=document.querySelectorAll("#grade-rows .grade-row");const bands=[];rows.forEach(r=>bands.push({min:parseInt(r.querySelector(".gb-min").value)||0,max:parseInt(r.querySelector(".gb-max").value)||100,grade:r.querySelector(".gb-grade").value.trim(),remark:r.querySelector(".gb-remark").value.trim()}));
   const caMax=parseInt(document.getElementById("ca-max").value)||40;const examMax=parseInt(document.getElementById("exam-max").value)||60;
-  const cfg={bands,caMax,examMax,updatedAt:Date.now()};await set(ir("gradingConfig",SCHOOL_ID),cfg);S.gradingConfig=cfg;gradeBands=bands;
-  await auditLog("Grading config updated");toast("Grading saved","","success");
+  const btn=document.getElementById("save-grading-btn");const restore=btnLoading(btn);
+  try{
+    const res=await callAPI("saveGrading",{bands,caMax,examMax});
+    if(res.config){S.gradingConfig=res.config;gradeBands=res.config.bands;}
+    toast("Grading saved",res.message||"","success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 
 // ════ TIMETABLE ════
@@ -1232,7 +1700,7 @@ function renderStudents(filter="",clsFilter=""){
       <td style="font-size:11px">${s.parentPhone||"—"}</td>
       <td><span class="badge ${schoolCount>1?"b-y":"b-gr"}">${schoolCount} school${schoolCount>1?"s":""}</span></td>
       <td><span class="badge b-g">Active</span></td>
-      <td class="td-acts"><button class="btn bs bsm" onclick="viewStudentProfile('${id}')">View</button><button class="btn bg bsm" onclick="resetStudentPassword('${id}')">Password</button><button class="btn bw bsm" onclick="markAlumni('${id}')">Alumni</button></td>
+      <td class="td-acts"><button class="btn bs bsm" onclick="viewStudentProfile('${id}')">View</button><button class="btn bw bsm" onclick="markAlumni('${id}')">Alumni</button></td>
     </tr>`;
   }).join("");
   renderAlumni();
@@ -1253,18 +1721,27 @@ document.getElementById("stu-cls-f").addEventListener("change",e=>renderStudents
 document.getElementById("create-stu-btn").addEventListener("click",async()=>{
   const name=document.getElementById("c-name").value.trim();const classId=document.getElementById("c-class").value;
   if(!name||!classId){toast("Name and class required","","error");return;}
-  const btn=document.getElementById("create-stu-btn");btn.disabled=true;btn.innerHTML='<div class="spin"></div> Creating...';
+  const btn=document.getElementById("create-stu-btn");const restore=btnLoading(btn,"Creating...");
   try{
-    const studentId=updateIdPreview();const now=Date.now();const photoUrl=document.getElementById("stu-photo-area").dataset.photoUrl||"";
-    const pass=document.getElementById("c-pass").value.trim()||studentId.slice(-4);
-    const profile={studentId,name,gender:document.getElementById("c-gender").value,dob:document.getElementById("c-dob").value,parentName:document.getElementById("c-pname").value.trim(),parentPhone:document.getElementById("c-pphone").value.trim(),parentEmail:document.getElementById("c-pemail").value.trim(),address:document.getElementById("c-addr").value.trim(),photoUrl,studentPassword:pass,currentSchoolId:SCHOOL_ID,schoolHistory:[SCHOOL_ID],createdBy:SCHOOL_ID,createdAt:now,status:"active"};
-    const enrollment={schoolId:SCHOOL_ID,classId,armId:document.getElementById("c-arm").value||null,admissionNumber:document.getElementById("c-adm").value.trim()||null,status:"active",enrolledAt:now,leftAt:null};
-    await set(dbr(`students/${studentId}`),profile);await set(dbr(`studentEnrollments/${studentId}/${SCHOOL_ID}`),enrollment);
+    const photoUrl=document.getElementById("stu-photo-area").dataset.photoUrl||"";
+    const res=await callAPI("createStudent",{
+      name,classId,
+      armId:document.getElementById("c-arm").value||null,
+      gender:document.getElementById("c-gender").value,
+      dob:document.getElementById("c-dob").value,
+      admissionNumber:document.getElementById("c-adm").value.trim()||null,
+      parentName:document.getElementById("c-pname").value.trim(),
+      parentPhone:document.getElementById("c-pphone").value.trim(),
+      parentEmail:document.getElementById("c-pemail").value.trim(),
+      address:document.getElementById("c-addr").value.trim(),
+      password:document.getElementById("c-pass").value.trim()||null,
+      photoUrl,
+    });
     ["c-name","c-dob","c-adm","c-pname","c-pphone","c-pemail","c-pass","c-addr"].forEach(id=>document.getElementById(id).value="");
     document.getElementById("stu-photo-area").dataset.photoUrl="";document.getElementById("stu-photo-preview").classList.remove("show");document.getElementById("stu-photo-icon").style.display="";document.getElementById("stu-photo-area").classList.remove("has-image");
-    await loadSchoolStudents();renderStudents();updateIdPreview();await auditLog("Student created",`${name} (${studentId})`);toast("Student created!",`ID: ${studentId}`,"success");
-  }catch(e){toast("Error",e.message,"error");}
-  btn.disabled=false;btn.textContent="Create Student";
+    await loadSchoolStudents();renderStudents();updateIdPreview();
+    toast("Student created!",`ID: ${res.studentId} · Password: ${res.password}`,"success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 
 document.getElementById("tr-search-btn").addEventListener("click",searchTransfer);
@@ -1290,45 +1767,123 @@ async function searchTransfer(){
 document.getElementById("confirm-tr-btn").addEventListener("click",async function(){
   const studentId=this.dataset.sid;const classId=document.getElementById("tr-class").value;
   if(!classId){toast("Select a class","","error");return;}
-  this.disabled=true;this.innerHTML='<div class="spin"></div>';
+  const restore=btnLoading(this,"Linking...");
   try{
-    const now=Date.now();await set(dbr(`studentEnrollments/${studentId}/${SCHOOL_ID}`),{schoolId:SCHOOL_ID,classId,armId:document.getElementById("tr-arm").value||null,admissionNumber:document.getElementById("tr-adm").value.trim()||null,status:"active",enrolledAt:now,leftAt:null});
-    const stuSnap=await get(dbr(`students/${studentId}`));if(stuSnap.exists()){const p=stuSnap.val();const hist=[...(p.schoolHistory||[])];if(!hist.includes(SCHOOL_ID))hist.push(SCHOOL_ID);await update(dbr(`students/${studentId}`),{currentSchoolId:SCHOOL_ID,schoolHistory:hist});}
-    document.getElementById("tr-found").style.display="none";document.getElementById("tr-inp").value="";await loadSchoolStudents();renderStudents();await auditLog("Student transferred",`${studentId} → ${SCHOOL_ID}`);toast("Student linked!","","success");
-  }catch(e){toast("Error",e.message,"error");}
-  this.disabled=false;this.innerHTML='✓ Link to This School';
+    const res=await callAPI("transferStudent",{
+      studentId,classId,
+      armId:document.getElementById("tr-arm").value||null,
+      admissionNumber:document.getElementById("tr-adm").value.trim()||null,
+    });
+    document.getElementById("tr-found").style.display="none";document.getElementById("tr-inp").value="";
+    await loadSchoolStudents();renderStudents();toast("Student linked!",res.message||"","success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
-window.markAlumni=async function(studentId){if(!confirm("Mark this student as alumni?"))return;await update(dbr(`studentEnrollments/${studentId}/${SCHOOL_ID}`),{status:"alumni",leftAt:Date.now()});await loadSchoolStudents();renderStudents();await auditLog("Student marked alumni",studentId);toast("Marked as alumni","","info");};
-window.reactivateStudent=async function(studentId){const clsId=Object.keys(S.classes)[0]||"";if(!clsId){toast("Create a class first","","error");return;}await update(dbr(`studentEnrollments/${studentId}/${SCHOOL_ID}`),{status:"active",leftAt:null,reEnrolledAt:Date.now()});await update(dbr(`students/${studentId}`),{currentSchoolId:SCHOOL_ID});await loadSchoolStudents();renderStudents();toast("Student re-enrolled","","success");};
+window.markAlumni=async function(studentId){
+  if(!confirm("Mark this student as alumni?"))return;
+  try{
+    const res=await callAPI("markAlumni",{studentId});
+    await loadSchoolStudents();renderStudents();toast("Marked as alumni",res.studentName||"","info");
+  }catch(e){toast("Error",e.message,"error");}
+};
+window.reactivateStudent=async function(studentId){
+  const clsId=Object.keys(S.classes)[0]||"";if(!clsId){toast("Create a class first","","error");return;}
+  try{
+    const res=await callAPI("reactivateStudent",{studentId,classId:clsId});
+    await loadSchoolStudents();renderStudents();toast("Student re-enrolled",res.studentName||"","success");
+  }catch(e){toast("Error",e.message,"error");}
+};
 window.viewStudentProfile=function(studentId){
   const s=STUDENTS[studentId]||ALUMNI[studentId];if(!s)return;
   const e=s._enrollment||{};const cls=S.classes[e.classId]?.name||"—";const arm=e.armId&&S.arms[e.armId]?S.arms[e.armId].name||"":"";
   document.getElementById("m-sv-title").textContent=s.name;
   document.getElementById("m-sv-body").innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)">${s.photoUrl?`<img src="${s.photoUrl}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)" alt=""/>`:""}<div><div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700">${s.name}</div><div style="font-size:11px;color:var(--text2)">${cls}${arm} · ${s.studentId}</div></div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${[["Gender",s.gender||"—"],["DOB",s.dob||"—"],["Admission",e.admissionNumber||"—"],["Parent",s.parentName||"—"],["Parent Phone",s.parentPhone||"—"],["Portal Password",s.studentPassword||"—"],["Schools",(s.schoolHistory||[]).join(" → ")||SCHOOL_ID],["Enrolled",e.enrolledAt?new Date(e.enrolledAt).toLocaleDateString("en-NG"):"—"]].map(([l,v])=>`<div style="background:var(--bg4);border:1px solid var(--border);border-radius:var(--radius);padding:9px 11px"><div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">${l}</div><div style="font-size:12px;font-weight:500;color:var(--text)">${v}</div></div>`).join("")}</div>`;
-  document.getElementById("m-sv-foot").innerHTML=`<button class="btn bs" data-close="m-stu-view">Close</button><button class="btn bg bsm" onclick="resetStudentPassword('${studentId}')">Generate New Password</button><button class="btn bw bsm" onclick="markAlumni('${studentId}');closeModal('m-stu-view')">Mark Alumni</button>`;
+  document.getElementById("m-sv-foot").innerHTML=`<button class="btn bs" data-close="m-stu-view">Close</button><button class="btn bw bsm" onclick="markAlumni('${studentId}');closeModal('m-stu-view')">Mark Alumni</button>`;
   openModal("m-stu-view");
 };
 
-window.resetStudentPassword=async function(studentId){const s=STUDENTS[studentId]||ALUMNI[studentId];if(!s){toast("Student not found","","error");return;}const pass=genPassword("STU");await update(dbr(`students/${studentId}`),{studentPassword:pass,passwordUpdatedAt:Date.now(),passwordUpdatedBy:auth.currentUser?.email||"admin"});if(STUDENTS[studentId])STUDENTS[studentId].studentPassword=pass;if(ALUMNI[studentId])ALUMNI[studentId].studentPassword=pass;await auditLog("Student password reset",`${s.name||studentId} (${studentId})`);toast("New student password",pass,"success");viewStudentProfile(studentId);};
-
 // ════ TEACHERS ════
-document.getElementById("add-tch-btn").addEventListener("click",()=>{["tc-id","tc-name","tc-phone","tc-key"].forEach(id=>document.getElementById(id).value="");openModal("m-tch");});
-document.getElementById("gen-key-btn").addEventListener("click",()=>{const s=document.getElementById("tc-subj");const code=S.subjects[s.value]?.code||"TCH";document.getElementById("tc-key").value=genKey(code);});
-document.getElementById("save-tch-btn").addEventListener("click",async()=>{
-  const id=document.getElementById("tc-id").value.trim()||genId("TCH");const name=document.getElementById("tc-name").value.trim();const subjectId=document.getElementById("tc-subj").value;const key=document.getElementById("tc-key").value.trim();
-  if(!name||!subjectId||!key){toast("Name, subject and key required","","error");return;}
-  const classes=Array.from(document.getElementById("tc-cls").selectedOptions).map(o=>o.value);
-  const data={schoolId:SCHOOL_ID,id,name,phone:document.getElementById("tc-phone").value,subjectId,accessKey:key,classes,createdAt:Date.now()};
-  await set(ir("teachers",id),data);S.teachers[id]=data;closeModal("m-tch");renderTeachers();await auditLog("Teacher added",`${name} · Key: ${key}`);toast("Teacher saved",name,"success");
+document.getElementById("add-tch-btn").addEventListener("click",()=>{
+  ["tc-id","tc-name","tc-phone","tc-key"].forEach(id=>document.getElementById(id).value="");
+  // Reset subject checkboxes
+  renderTeacherSubjectPicker();
+  openModal("m-tch");
 });
+document.getElementById("gen-key-btn").addEventListener("click",()=>{
+  const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let k="TCH-";for(let i=0;i<6;i++)k+=c[Math.floor(Math.random()*c.length)];
+  document.getElementById("tc-key").value=k;
+});
+
+// Render multi-subject checkbox picker inside teacher modal
+function renderTeacherSubjectPicker(){
+  const container=document.getElementById("tc-subj-picker");
+  if(!container)return;
+  const entries=Object.entries(S.subjects||{});
+  if(!entries.length){container.innerHTML='<div style="font-size:11px;color:var(--text3);padding:8px 0">No subjects yet — add subjects first.</div>';return;}
+  container.innerHTML=entries.map(([id,s])=>`
+    <label style="display:flex;align-items:center;gap:8px;padding:6px 9px;background:var(--bg4);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;font-size:12px;transition:all 0.15s" class="subj-check-label">
+      <input type="checkbox" value="${id}" class="tc-subj-cb" style="width:14px;height:14px;accent-color:var(--P)"/>
+      <span style="font-weight:500">${s.name}</span>
+      <span style="font-size:10px;color:var(--text3);margin-left:auto">${s.code||""}</span>
+    </label>`).join("");
+}
+window.renderTeacherSubjectPicker=renderTeacherSubjectPicker;
+
+document.getElementById("save-tch-btn").addEventListener("click",async()=>{
+  const id=document.getElementById("tc-id").value.trim()||genId("TCH");
+  const name=document.getElementById("tc-name").value.trim();
+  const key=document.getElementById("tc-key").value.trim().toUpperCase();
+  // Collect checked subject IDs
+  const subjectIds=Array.from(document.querySelectorAll(".tc-subj-cb:checked")).map(cb=>cb.value);
+  if(!name){toast("Teacher name required","","error");return;}
+  if(!key){toast("Access key required","","error");return;}
+  if(!subjectIds.length){toast("Select at least one subject","","error");return;}
+  const classes=Array.from(document.getElementById("tc-cls").selectedOptions).map(o=>o.value);
+  const btn=document.getElementById("save-tch-btn");const restore=btnLoading(btn,"Saving...");
+  try{
+    const res=await callAPI("createTeacher",{
+      id,name,phone:document.getElementById("tc-phone").value,
+      subjectIds,accessKey:key,classes,
+    });
+    // Store locally for display
+    S.teachers[id]={schoolId:SCHOOL_ID,id,name,phone:document.getElementById("tc-phone").value,
+      subjectIds,subjectId:subjectIds[0],accessKey:key,classes,createdAt:Date.now()};
+    closeModal("m-tch");renderTeachers();
+    toast("Teacher saved",`${res.name} · ${res.subjectCount} subject(s)`,"success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
+});
+
 function renderTeachers(filter=""){
   const tbody=document.getElementById("tch-tbody");let entries=Object.entries(S.teachers||{});
   if(filter)entries=entries.filter(([,t])=>t.name?.toLowerCase().includes(filter.toLowerCase()));
-  tbody.innerHTML=entries.length?entries.map(([id,t])=>{const subj=S.subjects[t.subjectId]?.name||"—";const classes=(t.classes||[]).map(c=>S.classes[c]?.name||c).join(", ")||"—";return `<tr><td class="td-id">${t.id||id}</td><td class="td-b">${t.name}</td><td>${subj}</td><td style="font-size:10px">${classes}</td><td><code style="background:var(--bg4);padding:2px 7px;border-radius:4px;font-size:10px;letter-spacing:1px">${t.accessKey}</code></td><td><button class="btn bg bsm" onclick="resetTeacherPassword('${id}')">Password</button><button class="btn bd bsm" onclick="delItem('teachers','${id}')">Del</button></td></tr>`;}).join(""):`<tr><td colspan="6"><div class="empty"><p>No teachers yet</p></div></td></tr>`;
+  tbody.innerHTML=entries.length?entries.map(([id,t])=>{
+    // Support both old single-subject and new multi-subject
+    const subjIds=t.subjectIds||[t.subjectId].filter(Boolean);
+    const subjNames=subjIds.map(sid=>S.subjects[sid]?.name||sid).filter(Boolean);
+    const subjDisplay=subjNames.length>2
+      ? `${subjNames.slice(0,2).join(", ")} +${subjNames.length-2} more`
+      : subjNames.join(", ")||"—";
+    const classes=(t.classes||[]).map(c=>S.classes[c]?.name||c).join(", ")||"—";
+    return `<tr>
+      <td class="td-id">${t.id||id}</td><td class="td-b">${t.name}</td>
+      <td title="${subjNames.join(', ')}">${subjDisplay}</td>
+      <td style="font-size:10px">${classes}</td>
+      <td><code style="background:var(--bg4);padding:2px 7px;border-radius:4px;font-size:10px;letter-spacing:1px">${t.accessKey}</code></td>
+      <td>
+        <button class="btn bd bsm" onclick="deleteTeacher('${id}')">Del</button>
+      </td>
+    </tr>`;
+  }).join(""):`<tr><td colspan="6"><div class="empty"><p>No teachers yet</p></div></td></tr>`;
 }
 document.getElementById("tch-search").addEventListener("input",e=>renderTeachers(e.target.value));
-window.resetTeacherPassword=async function(teacherId){const t=S.teachers?.[teacherId];if(!t){toast("Teacher not found","","error");return;}const code=S.subjects[t.subjectId]?.code||"TCH";const key=genKey(code);await update(ir("teachers",teacherId),{accessKey:key,passwordUpdatedAt:Date.now(),passwordUpdatedBy:auth.currentUser?.email||"admin"});S.teachers[teacherId].accessKey=key;renderTeachers(document.getElementById("tch-search").value);await auditLog("Teacher password reset",`${t.name||teacherId} · New key: ${key}`);toast("New teacher access key",key,"success");};
+
+window.deleteTeacher=async function(teacherId){
+  if(!confirm("Remove this teacher?"))return;
+  try{
+    await callAPI("deleteTeacher",{teacherId});
+    delete S.teachers[teacherId];renderTeachers();toast("Teacher removed","","info");
+  }catch(e){toast("Error",e.message,"error");}
+};
 
 // ════ RESULTS ════
 document.querySelectorAll(".tab[data-rtab]").forEach(t=>{
@@ -1343,42 +1898,48 @@ async function loadRawResults(){
 document.getElementById("run-proc-btn").addEventListener("click",async()=>{
   const sessionId=document.getElementById("proc-sess").value;const termId=document.getElementById("proc-term").value;const classId=document.getElementById("proc-class").value;
   if(!sessionId||!termId||!classId){toast("Select session, term and class","","error");return;}
-  await runEngine(sessionId,termId,classId);
-});
-async function runEngine(sessionId,termId,classId){
-  const fill=document.getElementById("proc-fill");const lbl=document.getElementById("proc-lbl");const btn=document.getElementById("run-proc-btn");btn.disabled=true;
-  const p=(v,m)=>{fill.style.width=v+"%";lbl.textContent=m;};
+  const fill=document.getElementById("proc-fill");const lbl=document.getElementById("proc-lbl");
+  const btn=document.getElementById("run-proc-btn");const restore=btnLoading(btn,"Processing...");
+  fill.style.width="20%";lbl.textContent="Sending to server...";
   try{
-    p(10,"Loading raw results...");const snap=await get(sr("rawResults"));if(!snap.exists()){p(0,"No raw results");btn.disabled=false;return;}
-    const allRaw=[];snap.forEach(c=>allRaw.push({key:c.key,...c.val()}));
-    const classStudents=Object.entries(STUDENTS).filter(([,s])=>s._enrollment?.classId===classId&&s._enrollment?.status==="active");
-    if(!classStudents.length){toast("No active students","","error");p(0,"Ready");btn.disabled=false;return;}
-    p(25,`Processing ${classStudents.length} students...`);
-    const results=[];
-    for(const [stuId,stu] of classStudents){
-      const stuScores=allRaw.filter(r=>r.studentId===stuId&&!r.processed);if(!stuScores.length)continue;
-      let total=0;let count=0;const scoreDetails={};
-      for(const raw of stuScores){const ca=parseInt(raw.caScore)||0;const exam=parseInt(raw.examScore)||0;const sub=ca+exam;const{grade,remark}=getGrade(sub);scoreDetails[raw.subjectId]={ca,exam,total:sub,grade,remark,rawKey:raw.key};total+=sub;count++;}
-      const average=count>0?Math.round((total/count)*10)/10:0;results.push({stuId,stu,total,average,count,scoreDetails});
+    fill.style.width="50%";lbl.textContent="Calculating results...";
+    const res=await callAPI("processResults",{sessionId,termId,classId});
+    fill.style.width="100%";lbl.textContent=`✓ ${res.processed} students processed`;
+    if(res.preview&&res.preview.length){
+      document.getElementById("proc-preview").innerHTML=`
+        <div class="tbl" style="margin-top:12px">
+          <div class="tbl-bar">
+            <span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700">✓ ${res.className||classId} — ${res.processed} students processed</span>
+            <button class="btn bsc bsm" onclick="publishResultsFromUI('${classId}','${sessionId}','${termId}')">Publish Results</button>
+          </div>
+          <table><thead><tr><th>Pos</th><th>Student</th><th>Total</th><th>Avg</th><th>Grade</th></tr></thead>
+          <tbody>${res.preview.map(r=>`<tr>
+            <td><strong style="color:var(--P2)">${r.position}</strong></td>
+            <td class="td-b">${r.studentName}</td>
+            <td>${r.total}</td><td>${r.average}</td>
+            <td><strong style="color:${r.overallGrade==="A"?"var(--success)":r.overallGrade==="F"?"var(--danger)":"var(--P2)"}">${r.overallGrade}</strong></td>
+          </tr>`).join("")}</tbody></table>
+        </div>`;
     }
-    p(50,"Calculating positions...");results.sort((a,b)=>b.average-a.average);let pos=1;for(let i=0;i<results.length;i++){if(i>0&&results[i].average<results[i-1].average)pos=i+1;results[i].position=pos;}
-    p(70,"Saving...");
-    for(const r of results){
-      const{grade,remark}=getGrade(r.average);const data={studentId:r.stuId,studentName:r.stu.name,schoolId:SCHOOL_ID,classId,sessionId,termId,total:r.total,average:r.average,position:r.position,subjectCount:r.count,overallGrade:grade,overallRemark:remark,scoreDetails:r.scoreDetails,status:"draft",processedAt:Date.now()};
-      const newRef=await push(sr("processedResults"),data);S.processedResults=S.processedResults||{};S.processedResults[newRef.key]=data;
-      for(const[,d] of Object.entries(r.scoreDetails)){await update(ir("rawResults",d.rawKey),{processed:true});}
-    }
-    p(90,"Building preview...");const cls=S.classes[classId]?.name||classId;
-    document.getElementById("proc-preview").innerHTML=`<div class="tbl" style="margin-top:12px"><div class="tbl-bar"><span style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700">✓ ${cls} — ${results.length} students processed</span><button class="btn bsc bsm" onclick="publishResults('${classId}','${sessionId}','${termId}')">Publish Results</button></div><table><thead><tr><th>Pos</th><th>Student</th><th>Subjects</th><th>Total</th><th>Average</th><th>Grade</th></tr></thead><tbody>${results.map(r=>{const{grade}=getGrade(r.average);return `<tr><td><strong style="color:var(--P2)">${r.position}</strong></td><td class="td-b">${r.stu.name}</td><td>${r.count}</td><td>${r.total}</td><td>${r.average}</td><td><strong style="color:${grade==="A"?"var(--success)":grade==="F"?"var(--danger)":"var(--P2)"}">${grade}</strong></td></tr>`;}).join("")}</tbody></table></div>`;
-    p(100,`✓ ${results.length} students processed`);await auditLog("Results processed",`${cls} · ${results.length} students`);toast("Processing complete",`${results.length} students`,"success");
-  }catch(e){p(0,"Error: "+e.message);toast("Error",e.message,"error");}
-  btn.disabled=false;
-}
-window.publishResults=async function(classId,sessionId,termId){
-  const snap=await get(sr("processedResults"));if(!snap.exists())return;
-  const updates={};snap.forEach(c=>{const v=c.val();if(v.classId===classId&&v.sessionId===sessionId&&v.termId===termId&&v.status==="draft"){updates[`processedResults/${SCHOOL_ID}/${c.key}/status`]="published";updates[`processedResults/${SCHOOL_ID}/${c.key}/publishedAt`]=Date.now();}});
-  await update(ref(db),updates);await auditLog("Results published",S.classes[classId]?.name||classId);toast("Results published!","Students can now check results","success");loadPublished();
+    toast("Processing complete",res.message||"","success");
+  }catch(e){
+    fill.style.width="0%";lbl.textContent="Error — see toast";
+    toast("Processing failed",e.message,"error");
+  }finally{restore();}
+});
+
+window.publishResultsFromUI=async function(classId,sessionId,termId){
+  const btn=event.target;const restore=btnLoading(btn,"Publishing...");
+  try{
+    const res=await callAPI("publishResults",{classId,sessionId,termId});
+    toast("Results published!",res.message||"","success");
+    loadPublished();
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 };
+
+// Keep legacy publishResults global for backwards compat
+window.publishResults=window.publishResultsFromUI;
+
 async function loadPublished(){
   const snap=await get(sr("processedResults"));const tbody=document.getElementById("pub-tbody");
   if(!snap.exists()){tbody.innerHTML=`<tr><td colspan="9"><div class="empty"><p>No published results</p></div></td></tr>`;return;}
@@ -1388,13 +1949,19 @@ async function loadPublished(){
 
 // ════ RESULT PINS ════
 document.getElementById("gen-pins-btn").addEventListener("click",async()=>{
-  const sessionId=document.getElementById("pin-sess").value;const termId=document.getElementById("pin-term").value;const qty=Math.min(parseInt(document.getElementById("pin-qty").value)||50,500);
+  const sessionId=document.getElementById("pin-sess").value;const termId=document.getElementById("pin-term").value;
+  const qty=Math.min(parseInt(document.getElementById("pin-qty").value)||50,500);
   if(!sessionId||!termId){toast("Select session and term","","error");return;}
-  const btn=document.getElementById("gen-pins-btn");btn.disabled=true;btn.innerHTML='<div class="spin"></div> Generating...';
-  const batchId=genId("BATCH");const now=Date.now();const updates={};
-  for(let i=0;i<qty;i++){const id=genId("PIN");updates[`pins/${SCHOOL_ID}/${id}`]={pin:genPin(),schoolId:SCHOOL_ID,sessionId,termId,used:false,usedBy:null,usedAt:null,type:"result",batchId,createdAt:now};}
-  await update(ref(db),updates);S.pins={...(S.pins||{}),...Object.fromEntries(Object.entries(updates).map(([path,value])=>[path.split("/").pop(),value]))};
-  await auditLog("Result pins generated",`${qty} pins · Batch ${batchId}`);toast("Pins generated",`${qty} pins ready`,"success");btn.disabled=false;btn.textContent="Generate Result Pins";renderPins();
+  const btn=document.getElementById("gen-pins-btn");const restore=btnLoading(btn,"Generating...");
+  try{
+    const res=await callAPI("generateResultPins",{sessionId,termId,quantity:qty});
+    WALLET.balance=res.newBalance||0;renderWalletBalance();updatePinCost();
+    toast("Pins generated!",`${res.pinsGenerated} pins · ₦${(res.totalCost||0).toLocaleString()} deducted`,"success");
+    renderPins();
+  }catch(e){
+    if(e.message?.toLowerCase().includes("insufficient")){toast("Insufficient balance","Fund your wallet first","error");goPage("wallet");}
+    else toast("Error",e.message,"error");
+  }finally{restore();}
 });
 async function renderPins(){
   const snap=await get(sr("pins"));const grid=document.getElementById("pins-grid");const countEl=document.getElementById("pin-count-lbl");
@@ -1404,7 +1971,7 @@ async function renderPins(){
   const resultPins=pins.filter(p=>!p.type||p.type==="result");
   const filtered=filter?resultPins.filter(p=>filter==="used"?p.used:!p.used):resultPins;
   countEl.textContent=`${resultPins.filter(p=>!p.used).length} unused · ${resultPins.length} total`;
-  grid.innerHTML=filtered.map(p=>{const who=p.usedBy?(STUDENTS[p.usedBy]?.name||p.usedBy):"Not used";const sess=S.sessions[p.sessionId]?.name||p.sessionId||"—";const term=S.terms[p.termId]?.name||p.termId||"—";return `<div class="pin-card" style="border-color:${p.used?"rgba(239,68,68,0.35)":"rgba(34,197,94,0.35)"}"><div class="pin-code">${p.pin}</div><span class="badge ${p.used?"b-r":"b-g"}">${p.used?"Used":"Unused"}</span><div style="font-size:9px;color:var(--text3);margin-top:6px;line-height:1.5">${sess} · ${term}<br/>Batch: ${p.batchId||"old"}<br/>${who}${p.usedAt?` · ${new Date(p.usedAt).toLocaleDateString("en-NG")}`:""}</div></div>`}).join("")||'<div class="empty" style="grid-column:1/-1"><p>No pins match</p></div>';
+  grid.innerHTML=filtered.slice(0,200).map(p=>`<div class="pin-card"><div class="pin-code">${p.pin}</div><span class="badge ${p.used?"b-r":"b-g"}">${p.used?"Used":"Active"}</span></div>`).join("")||'<div class="empty" style="grid-column:1/-1"><p>No pins match</p></div>';
 }
 document.getElementById("pin-filter").addEventListener("change",renderPins);
 
@@ -1427,12 +1994,16 @@ document.getElementById("save-fee-struct-btn").addEventListener("click",async()=
 });
 
 document.getElementById("gen-fee-pin-btn").addEventListener("click",async()=>{
+  // Legacy handler for fees page (kept for compatibility)
   const stuId=document.getElementById("fee-pin-stu").value;const sessionId=document.getElementById("fee-pin-sess").value;const amount=parseInt(document.getElementById("fee-pin-amount").value)||0;
   if(!stuId||!sessionId||!amount){toast("Select student, session and enter amount","","error");return;}
+  if((WALLET.balance||0)<PIN_PRICE){toast("Insufficient wallet balance","Fund your wallet first","error");goPage("wallet");return;}
   const stu=STUDENTS[stuId]||ALUMNI[stuId];const btn=document.getElementById("gen-fee-pin-btn");btn.disabled=true;btn.innerHTML='<div class="spin"></div>';
   try{
+    await deductWallet(PIN_PRICE,`Fee pin for ${stu?.name||stuId}`);
     const pin=genPin();const id=genId("FPAY");
     await set(dbr(`feePins/${SCHOOL_ID}/${id}`),{pin,amount,studentId:stuId,studentName:stu?.name||stuId,sessionId,schoolId:SCHOOL_ID,type:"fee",note:document.getElementById("fee-pin-note").value.trim(),used:false,createdAt:Date.now()});
+    await writeCommission(1,"fee");
     document.getElementById("fee-pin-display").textContent=pin;document.getElementById("fee-pin-info").textContent=`${fmt(amount)} · ${stu?.name||stuId} · ${S.sessions[sessionId]?.name||"—"}`;document.getElementById("fee-pin-result").style.display="block";
     loadFeePins();await auditLog("Fee pin generated",`${fmt(amount)} for ${stu?.name||stuId}`);toast("Fee pin generated","Give this pin to the parent","success");
   }catch(e){toast("Error",e.message,"error");}
@@ -1489,9 +2060,11 @@ document.getElementById("add-award-btn").addEventListener("click",()=>{["aw-titl
 document.getElementById("save-award-btn").addEventListener("click",async()=>{
   const stuId=document.getElementById("aw-stu").value;const title=document.getElementById("aw-title").value.trim();
   if(!stuId||!title){toast("Student and title required","","error");return;}
-  const stu=STUDENTS[stuId]||ALUMNI[stuId];const id=genId("AWD");
-  const data={schoolId:SCHOOL_ID,studentId:stuId,studentName:stu?.name||"",title,category:document.getElementById("aw-cat").value,sessionId:document.getElementById("aw-sess").value,termId:document.getElementById("aw-term").value,awardedAt:Date.now()};
-  await set(dbr(`awards/${SCHOOL_ID}/${id}`),data);closeModal("m-award");renderAwards();await auditLog("Award given",`${stu?.name||stuId} — ${title}`);toast("Award saved",title,"success");
+  const btn=document.getElementById("save-award-btn");const restore=btnLoading(btn,"Saving...");
+  try{
+    const res=await callAPI("createAward",{studentId:stuId,title,category:document.getElementById("aw-cat").value,sessionId:document.getElementById("aw-sess").value,termId:document.getElementById("aw-term").value});
+    closeModal("m-award");renderAwards();toast("Award saved",res.title||title,"success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 async function renderAwards(){
   const snap=await get(dbr(`awards/${SCHOOL_ID}`));const list=document.getElementById("awards-list");
@@ -1499,21 +2072,29 @@ async function renderAwards(){
   const entries=[];snap.forEach(c=>entries.unshift({key:c.key,...c.val()}));
   list.innerHTML=entries.map(a=>`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius2);padding:13px 15px;margin-bottom:8px;display:flex;align-items:center;gap:11px"><div style="font-size:20px">🏆</div><div style="flex:1"><div style="font-size:12px;font-weight:500;color:var(--text)">${a.title}</div><div style="font-size:10px;color:var(--text3);margin-top:2px">${a.studentName||a.studentId} · ${a.category||""} · ${a.awardedAt?new Date(a.awardedAt).toLocaleDateString("en-NG"):""}</div></div><button class="btn bd bsm" onclick="delAward('${a.key}')">Del</button></div>`).join("");
 }
-window.delAward=async function(key){await remove(dbr(`awards/${SCHOOL_ID}/${key}`));renderAwards();toast("Award removed","","info");};
+window.delAward=async function(awardId){
+  try{await callAPI("deleteAward",{awardId});renderAwards();toast("Award removed","","info");}
+  catch(e){toast("Error",e.message,"error");}
+};
 
 // ════ ANNOUNCEMENTS ════
 document.getElementById("add-ann-btn").addEventListener("click",()=>{["ann-title","ann-body","ann-expires"].forEach(id=>document.getElementById(id).value="");openModal("m-ann");});
 document.getElementById("save-ann-btn").addEventListener("click",async()=>{
   const title=document.getElementById("ann-title").value.trim();const body=document.getElementById("ann-body").value.trim();
   if(!title||!body){toast("Title and message required","","error");return;}
-  const id=genId("ANN");const expires=document.getElementById("ann-expires").value;
-  const data={schoolId:SCHOOL_ID,title,body,postedBy:auth.currentUser?.email||"admin",postedAt:Date.now(),expiresAt:expires?new Date(expires).getTime():null,active:true};
-  await set(ir("announcements",id),data);S.announcements[id]=data;closeModal("m-ann");renderAnnouncements();await auditLog("Announcement posted",title);toast("Announcement published",title,"success");
+  const btn=document.getElementById("save-ann-btn");const restore=btnLoading(btn,"Posting...");
+  try{
+    const expires=document.getElementById("ann-expires").value;
+    const res=await callAPI("createAnnouncement",{title,body,expiresAt:expires||null});
+    // Update local state for immediate render
+    S.announcements[res.id||genId("ANN")]={schoolId:SCHOOL_ID,title,body,postedAt:Date.now(),active:true};
+    closeModal("m-ann");renderAnnouncements();toast("Announcement published",title,"success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 function renderAnnouncements(){
   const list=document.getElementById("ann-list");const entries=Object.entries(S.announcements||{});
   if(!entries.length){list.innerHTML='<div class="empty"><p>No announcements yet</p></div>';return;}
-  list.innerHTML=entries.sort((a,b)=>(b[1].postedAt||0)-(a[1].postedAt||0)).map(([id,a])=>`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius2);padding:13px 15px;margin-bottom:8px;display:flex;gap:11px"><div style="font-size:20px">📢</div><div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">${a.title}</div><div style="font-size:11px;color:var(--text2);margin-top:3px;line-height:1.5">${a.body?.substring(0,80)}...</div><div style="font-size:10px;color:var(--text3);margin-top:4px">${a.postedAt?new Date(a.postedAt).toLocaleDateString("en-NG"):""} · ${a.postedBy||""}</div></div><button class="btn bd bsm" onclick="delItem('announcements','${id}')">Del</button></div>`).join("");
+  list.innerHTML=entries.sort((a,b)=>(b[1].postedAt||0)-(a[1].postedAt||0)).map(([id,a])=>`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius2);padding:13px 15px;margin-bottom:8px;display:flex;gap:11px"><div style="font-size:20px">📢</div><div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">${a.title}</div><div style="font-size:11px;color:var(--text2);margin-top:3px;line-height:1.5">${(a.body||"").substring(0,80)}...</div><div style="font-size:10px;color:var(--text3);margin-top:4px">${a.postedAt?new Date(a.postedAt).toLocaleDateString("en-NG"):""} · ${a.postedBy||""}</div></div><button class="btn bd bsm" onclick="delItem('announcements','${id}')">Del</button></div>`).join("");
 }
 
 // ════ MESSAGES ════
@@ -1597,8 +2178,33 @@ function renderSettings(){
 ["set-c1","set-c2"].forEach(id=>{document.getElementById(id).addEventListener("input",updateColorPreview);});
 function updateColorPreview(){const c1=document.getElementById("set-c1").value||"#5B6EF5";const c2=document.getElementById("set-c2").value||"#F0C040";document.getElementById("color-preview").style.background=`linear-gradient(90deg,${c1},${c2})`;}
 document.getElementById("save-settings-btn").addEventListener("click",async()=>{
-  const updates={schoolName:document.getElementById("set-name").value.trim(),principalName:document.getElementById("set-principal").value.trim(),phone:document.getElementById("set-phone").value.trim(),address:document.getElementById("set-address").value.trim(),motto:document.getElementById("set-motto").value.trim(),schoolType:document.getElementById("set-type").value,primaryColor:document.getElementById("set-c1").value,secondaryColor:document.getElementById("set-c2").value,teacherRemark:document.getElementById("set-t-remark").value.trim(),principalRemark:document.getElementById("set-p-remark").value.trim(),nextTermBegins:document.getElementById("set-next-term").value.trim(),country:document.getElementById("set-country").value.trim(),state:document.getElementById("set-state-f").value.trim(),updatedAt:Date.now()};
-  await update(schoolRef(),updates);Object.assign(SCHOOL,updates);document.getElementById("sb-sn").textContent=updates.schoolName;document.getElementById("sb-av").style.background=updates.primaryColor;await auditLog("Settings updated");toast("Settings saved","","success");
+  const btn=document.getElementById("save-settings-btn");const restore=btnLoading(btn,"Saving...");
+  try{
+    const res=await callAPI("saveSettings",{
+      schoolName:document.getElementById("set-name").value.trim(),
+      principalName:document.getElementById("set-principal").value.trim(),
+      phone:document.getElementById("set-phone").value.trim(),
+      address:document.getElementById("set-address").value.trim(),
+      motto:document.getElementById("set-motto").value.trim(),
+      schoolType:document.getElementById("set-type").value,
+      primaryColor:document.getElementById("set-c1").value,
+      secondaryColor:document.getElementById("set-c2").value,
+      teacherRemark:document.getElementById("set-t-remark").value.trim(),
+      principalRemark:document.getElementById("set-p-remark").value.trim(),
+      nextTermBegins:document.getElementById("set-next-term").value.trim(),
+      country:document.getElementById("set-country").value.trim(),
+      state:document.getElementById("set-state-f").value.trim(),
+    });
+    // Update local SCHOOL object for sidebar/UI refresh
+    Object.assign(SCHOOL,{
+      schoolName:document.getElementById("set-name").value.trim(),
+      primaryColor:document.getElementById("set-c1").value,
+      secondaryColor:document.getElementById("set-c2").value,
+    });
+    document.getElementById("sb-sn").textContent=SCHOOL.schoolName;
+    document.getElementById("sb-av").style.background=SCHOOL.primaryColor;
+    toast("Settings saved",res.message||"","success");
+  }catch(e){toast("Error",e.message,"error");}finally{restore();}
 });
 
 // ════ SCHOOL DIRECTORY ════
@@ -1617,18 +2223,50 @@ document.getElementById("save-dir-btn").addEventListener("click",async()=>{
   await set(dbr(`schoolProfile/${SCHOOL_ID}`),data);await auditLog("Directory profile updated");toast("Directory profile saved","","success");
 });
 
-function renderGallery(images){
-  const gallery=document.getElementById("dir-gallery");const existing=images.map((url,i)=>`<div class="dir-img-wrap"><img src="${url}" alt=""/><div class="dir-img-del" onclick="removeGalleryImg(${i})">✕</div></div>`).join("");
-  const addBtn=`<div class="dir-add-img"><input type="file" id="dir-gallery-file" accept="image/*" multiple/><div style="font-size:24px;opacity:0.4">+</div><div style="font-size:11px;color:var(--text3);margin-top:4px">Add Photos</div></div>`;
-  gallery.innerHTML=existing+addBtn;
-  document.getElementById("dir-gallery-file").addEventListener("change",async function(){
-    for(const file of Array.from(this.files)){
-      if(file.size>3*1024*1024){toast("File too large","Max 3MB","error");continue;}
-      try{const url=await uploadFile(file,`gallery/${SCHOOL_ID}/${Date.now()}_${file.name}`,null,null,null,null);const snap=await get(dbr(`schoolProfile/${SCHOOL_ID}/gallery`));const existing=snap.exists()?snap.val():[];await set(dbr(`schoolProfile/${SCHOOL_ID}/gallery`),[...existing,url]);toast("Photo added","","success");renderDirectorySettings();}
-      catch(e){toast("Upload failed",e.message,"error");}
+function renderGallery(images) {
+  const gallery = document.getElementById("dir-gallery");
+  const existing = images.map((url, i) => `
+    <div class="dir-img-wrap">
+      <img src="${url}" alt="" style="max-width:100%;max-height:120px;object-fit:contain"/>
+      <div class="dir-img-del" onclick="removeGalleryImg(${i})">✕</div>
+    </div>
+  `).join("");
+  
+  const addBtn = `
+    <div class="dir-add-img">
+      <input type="file" id="dir-gallery-file" accept="image/*" multiple/>
+      <div style="font-size:24px;opacity:0.4">+</div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Add Photos</div>
+    </div>
+  `;
+  
+  gallery.innerHTML = existing + addBtn;
+  
+  document.getElementById("dir-gallery-file").addEventListener("change", async function() {
+    for (const file of Array.from(this.files)) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast("File too large", "Max 2MB", "error");
+        continue;
+      }
+      
+      try {
+        const base64 = await compressImageToBase64(file, 600, 0.65);
+        
+        const snap = await get(dbr(`schoolProfile/${SCHOOL_ID}/gallery`));
+        const existing = snap.exists() ? snap.val() : [];
+        
+        await set(dbr(`schoolProfile/${SCHOOL_ID}/gallery`), [...existing, base64]);
+        
+        toast("Photo added", "", "success");
+        renderDirectorySettings();
+      } catch (e) {
+        toast("Upload failed", e.message, "error");
+      }
     }
   });
 }
+
+
 window.removeGalleryImg=async function(index){
   const snap=await get(dbr(`schoolProfile/${SCHOOL_ID}/gallery`));if(!snap.exists())return;
   const imgs=[...snap.val()];imgs.splice(index,1);await set(dbr(`schoolProfile/${SCHOOL_ID}/gallery`),imgs);renderDirectorySettings();toast("Photo removed","","info");};
@@ -1664,6 +2302,9 @@ function populateSelects(){
   const ttTch=document.getElementById("tt-tch-sel");if(ttTch)ttTch.innerHTML='<option value="">— Teacher —</option>'+Object.entries(S.teachers||{}).map(([id,t])=>`<option value="${id}">${t.name}</option>`).join("");
   const feePinStu=document.getElementById("fee-pin-stu");if(feePinStu)feePinStu.innerHTML='<option value="">— Select Student —</option>'+stuOpts;
   const stuClsF=document.getElementById("stu-cls-f");if(stuClsF)stuClsF.innerHTML='<option value="">All Classes</option>'+clsOpts;
+  // New fee pin tab selects on pins page
+  const fpStu2=document.getElementById("fee-pin-stu2");if(fpStu2)fpStu2.innerHTML='<option value="">— Select Student —</option>'+stuOpts;
+  const fpSess2=document.getElementById("fee-pin-sess2");if(fpSess2)fpSess2.innerHTML='<option value="">— Select Session —</option>'+sessOpts;
   // Auto-fill fee session with active context
   const ctx=getCtx();if(ctx){["fee-sess","fee-pin-sess","debtor-sess"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=ctx.sessionId||"";});}
 }
@@ -1728,78 +2369,202 @@ document.querySelectorAll(".drawer-ni[data-page]").forEach(n=>{
 const _origGoPage=window.goPage;
 window.goPage=function(id){
   _origGoPage(id);
-  // Sync drawer active state
   document.querySelectorAll(".drawer-ni").forEach(n=>n.classList.remove("active"));
   document.querySelector(`.drawer-ni[data-page="${id}"]`)?.classList.add("active");
 };
-<!-- MOBILE DRAWER BACKDROP -->
-<div class="drawer-backdrop" id="mob-backdrop" onclick="toggleDrawer()"></div>
 
-<!-- MOBILE DRAWER -->
-<div class="drawer" id="mob-drawer">
-  <div class="drawer-top">
-    <div class="drawer-brand">School<span>Core</span></div>
-    <div class="drawer-close" onclick="toggleDrawer()">✕</div>
-  </div>
+// ════ PIN TABS ════
+window.switchPinTab=function(tab){
+  document.querySelectorAll("[data-pintab]").forEach(t=>t.classList.toggle("active",t.dataset.pintab===tab));
+  document.getElementById("pintab-result").style.display=tab==="result"?"block":"none";
+  document.getElementById("pintab-fee").style.display=tab==="fee"?"block":"none";
+  if(tab==="fee")renderFeePins2();
+};
 
-  <!-- School card -->
-  <div class="drawer-school" onclick="goPage('settings');toggleDrawer()">
-    <div class="drawer-school-logo" id="d-logo">SC</div>
-    <div class="drawer-sn" id="d-sn">Loading...</div>
-    <div class="drawer-st" id="d-st">—</div>
-    <div class="drawer-plan" id="d-plan">FREE</div>
-  </div>
+// ════ PIN COST CALCULATOR ════
+window.updatePinCost=function(){
+  const qty=Math.min(parseInt(document.getElementById("pin-qty")?.value)||50,500);
+  const totalCost=qty*PIN_PRICE;const bal=WALLET.balance||0;const after=bal-totalCost;
+  const qtyEl=document.getElementById("cc-qty");const totEl=document.getElementById("cc-total");const balEl=document.getElementById("cc-bal");const aftEl=document.getElementById("cc-after");const insEl=document.getElementById("cc-insufficient");const shortEl=document.getElementById("cc-shortfall");const btn=document.getElementById("gen-pins-btn");
+  if(qtyEl)qtyEl.textContent=qty;
+  if(totEl)totEl.textContent=`₦${totalCost.toLocaleString()}`;
+  if(balEl)balEl.textContent=`₦${bal.toLocaleString()}`;
+  const insufficient=bal<totalCost;
+  if(aftEl)aftEl.textContent=insufficient?"—":`₦${after.toLocaleString()}`;
+  if(insEl)insEl.style.display=insufficient?"block":"none";
+  if(shortEl&&insufficient)shortEl.textContent=`₦${(totalCost-bal).toLocaleString()}`;
+  if(btn)btn.disabled=insufficient;
+};
 
-  <!-- Nav sections -->
-  <div class="drawer-ns">
-    <div class="drawer-nl">Overview</div>
-    <div class="drawer-ni active" data-page="dashboard">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Dashboard
-    </div>
-  </div>
-  <div class="drawer-ns">
-    <div class="drawer-nl">Setup</div>
-    <div class="drawer-ni" data-page="sessions"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Sessions & Terms</div>
-    <div class="drawer-ni" data-page="classes"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Classes & Arms</div>
-    <div class="drawer-ni" data-page="subjects"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Subjects</div>
-    <div class="drawer-ni" data-page="grading"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Grading Config</div>
-    <div class="drawer-ni" data-page="timetable"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="3" y1="16" x2="21" y2="16"/><line x1="9" y1="10" x2="9" y2="22"/><line x1="15" y1="10" x2="15" y2="22"/></svg>Timetable</div>
-    <div class="drawer-ni" data-page="calendar"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>Academic Calendar</div>
-  </div>
-  <div class="drawer-ns">
-    <div class="drawer-nl">People</div>
-    <div class="drawer-ni" data-page="students"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Students</div>
-    <div class="drawer-ni" data-page="teachers"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>Teachers</div>
-  </div>
-  <div class="drawer-ns">
-    <div class="drawer-nl">Academics</div>
-    <div class="drawer-ni" data-page="results"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Results</div>
-    <div class="drawer-ni" data-page="pins"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2"/></svg>Scratch Pins</div>
-    <div class="drawer-ni" data-page="fees"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>School Fees</div>
-  </div>
-  <div class="drawer-ns">
-    <div class="drawer-nl">Records</div>
-    <div class="drawer-ni" data-page="awards"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>Awards</div>
-    <div class="drawer-ni" data-page="announcements"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 17H2a3 3 0 000 6h20v-6z"/><path d="M10.2 17L15 4.55a1 1 0 011.8 0L21.8 17"/></svg>Announcements</div>
-    <div class="drawer-ni" data-page="messages"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Messages</div>
-  </div>
-  <div class="drawer-ns">
-    <div class="drawer-nl">System</div>
-    <div class="drawer-ni" data-page="settings"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings</div>
-    <div class="drawer-ni" data-page="directory"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>School Directory</div>
-    <div class="drawer-ni" data-page="audit"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>Audit Log</div>
-  </div>
+// ════ WALLET: LOAD ════
+async function loadWallet(){
+  const snap=await get(dbr(`schoolWallet/${SCHOOL_ID}`));
+  if(snap.exists())WALLET={...{balance:0,totalDeposited:0,totalSpent:0,pendingDeposit:0},...snap.val()};
+  else WALLET={balance:0,totalDeposited:0,totalSpent:0,pendingDeposit:0};
+  renderWalletBalance();
+}
+window.loadWallet=loadWallet;
 
-  <!-- Footer -->
-  <div class="drawer-foot">
-    <div class="drawer-admin">
-      <div class="drawer-av" id="d-av">A</div>
-      <div><div class="drawer-an" id="d-an">Admin</div><div class="drawer-ar">School Administrator</div></div>
-    </div>
-    <button class="drawer-out" id="drawer-logout-btn">Sign Out</button>
-  </div>
-</div>
+// ════ WALLET: RENDER BALANCE (mini displays across pages) ════
+function renderWalletBalance(){
+  const bal=WALLET.balance||0;const fmt2=v=>`₦${(v||0).toLocaleString()}`;
+  // Main wallet page
+  const wBal=document.getElementById("w-balance");if(wBal)wBal.textContent=fmt2(bal);
+  const wDep=document.getElementById("w-deposited");if(wDep)wDep.textContent=fmt2(WALLET.totalDeposited);
+  const wSpt=document.getElementById("w-spent");if(wSpt)wSpt.textContent=fmt2(WALLET.totalSpent);
+  const wPnd=document.getElementById("w-pending");if(wPnd)wPnd.textContent=fmt2(WALLET.pendingDeposit);
+  const pndNotice=document.getElementById("w-pending-notice");if(pndNotice)pndNotice.style.display=(WALLET.pendingDeposit||0)>0?"block":"none";
+  // Mini strips on pins page
+  const pBal=document.getElementById("pins-wallet-bal");if(pBal)pBal.textContent=fmt2(bal);
+  const fpBal=document.getElementById("fp-bal");if(fpBal)fpBal.textContent=fmt2(bal);
+  const fpIns=document.getElementById("fp-insufficient");if(fpIns)fpIns.style.display=bal<PIN_PRICE?"block":"none";
+  // Navbar badge
+  const nbWal=document.getElementById("nb-wallet");if(nbWal)nbWal.style.display=bal<PIN_PRICE&&(WALLET.totalDeposited||0)===0?"":"none";
+  updatePinCost();
+}
 
-</body>
+// ════ WALLET: RENDER FULL PAGE ════
+async function renderWallet(){
+  renderWalletBalance();
+  // Transaction history
+  const snap=await get(dbr(`walletTransactions/${SCHOOL_ID}`));const list=document.getElementById("w-tx-list");
+  if(!snap.exists()||!Object.keys(snap.val()||{}).length){list.innerHTML='<div class="empty"><p>No transactions yet. Fund your wallet to get started.</p></div>';return;}
+  const txs=[];snap.forEach(c=>txs.unshift({key:c.key,...c.val()}));
+  list.innerHTML=txs.slice(0,50).map(tx=>{
+    const isCredit=tx.type==="credit";const isDebit=tx.type==="debit";
+    const color=isCredit?"var(--success)":isDebit?"var(--danger)":"var(--warning)";
+    const sign=isCredit?"+":isDebit?"-":"";
+    const icon=isCredit?"✅":isDebit?"🔑":"⏳";
+    return `<div class="wtx-item">
+      <div class="wtx-dot" style="background:${color}"></div>
+      <div class="wtx-dot" style="font-size:14px;width:auto;height:auto;background:none">${icon}</div>
+      <div style="flex:1">
+        <div class="wtx-desc">${tx.description||tx.type||"Transaction"}</div>
+        <div class="wtx-sub">${tx.timestamp?new Date(tx.timestamp).toLocaleString("en-NG"):""} · Balance after: ₦${(tx.balanceAfter||0).toLocaleString()}</div>
+      </div>
+      <div class="wtx-amt" style="color:${color}">${sign}₦${(tx.amount||0).toLocaleString()}</div>
+    </div>`;
+  }).join("");
+}
+
+// ════ WALLET: DEDUCT ════
+async function deductWallet(amount,description){
+  const newBal=Math.max(0,(WALLET.balance||0)-amount);const newSpent=(WALLET.totalSpent||0)+amount;
+  await update(dbr(`schoolWallet/${SCHOOL_ID}`),{balance:newBal,totalSpent:newSpent,lastActivity:Date.now()});
+  await push(dbr(`walletTransactions/${SCHOOL_ID}`),{type:"debit",amount,description,balanceAfter:newBal,timestamp:Date.now()});
+  WALLET.balance=newBal;WALLET.totalSpent=newSpent;
+  renderWalletBalance();
+}
+
+// ════ WALLET: OPEN FUND MODAL ════
+window.openFundWallet=async function(){
+  document.getElementById("fw-amount").value="";document.getElementById("fw-screenshot").value="";document.getElementById("fw-calc").style.display="none";
+  document.getElementById("fw-bank-loading").style.display="block";document.getElementById("fw-bank-details").style.display="none";document.getElementById("fw-bank-error").style.display="none";document.getElementById("fw-submit-btn").disabled=true;
+  openModal("m-fund-wallet");
+  // Load bank details from Firebase
+  try{
+    const snap=await get(dbr("platformSettings/paymentDetails"));
+    document.getElementById("fw-bank-loading").style.display="none";
+    if(!snap.exists()||!snap.val().accountNumber){document.getElementById("fw-bank-error").style.display="block";return;}
+    const d=snap.val();
+    document.getElementById("fw-bank-name").textContent=d.bankName||"—";
+    document.getElementById("fw-acct-num").textContent=d.accountNumber||"—";
+    document.getElementById("fw-acct-name").textContent=d.accountName||"—";
+    document.getElementById("fw-bank-details").style.display="block";
+    // Generate reference
+    const ref_code=`PAY-${SCHOOL_ID}-${Date.now()}`;document.getElementById("fw-ref-code").textContent=ref_code;
+    document.getElementById("fw-submit-btn").disabled=false;
+  }catch(e){document.getElementById("fw-bank-loading").style.display="none";document.getElementById("fw-bank-error").style.display="block";}
+};
+
+// ════ WALLET: UPDATE FUND CALC ════
+window.updateFundCalc=function(){
+  const amount=parseInt(document.getElementById("fw-amount")?.value)||0;
+  const calcEl=document.getElementById("fw-calc");const pinsEl=document.getElementById("fw-pins");const payEl=document.getElementById("fw-pay-amount");
+  if(calcEl)calcEl.style.display=amount>0?"block":"none";
+  if(pinsEl)pinsEl.textContent=amount>0?`${Math.floor(amount/PIN_PRICE)} pins`:"0 pins";
+  if(payEl)payEl.textContent=amount>0?`₦${amount.toLocaleString()}`:"—";
+};
+
+// ════ WALLET: SUBMIT FUNDING REQUEST ════
+window.submitWalletFunding=async function(){
+  const amount=parseInt(document.getElementById("fw-amount")?.value)||0;
+  if(!amount||amount<1){toast("Enter a valid amount","","error");return;}
+  const refCode=document.getElementById("fw-ref-code")?.textContent||"";
+  const btn=document.getElementById("fw-submit-btn");const spin=document.getElementById("fw-spin");
+  btn.disabled=true;spin.style.display="inline-block";
+  try{
+    const reqId=genId("WR");
+    await set(dbr(`walletRequests/${reqId}`),{schoolId:SCHOOL_ID,schoolName:SCHOOL?.schoolName||"",amount,reference:refCode,screenshot:document.getElementById("fw-screenshot").value.trim()||null,status:"pending",submittedAt:Date.now()});
+    // Update pending amount
+    const newPending=(WALLET.pendingDeposit||0)+amount;
+    await update(dbr(`schoolWallet/${SCHOOL_ID}`),{pendingDeposit:newPending});
+    WALLET.pendingDeposit=newPending;
+    // Write pending transaction
+    await push(dbr(`walletTransactions/${SCHOOL_ID}`),{type:"pending",amount,description:`Deposit pending approval — Ref: ${refCode}`,balanceAfter:WALLET.balance||0,timestamp:Date.now()});
+    await auditLog("Wallet funding submitted",`₦${amount.toLocaleString()} · Ref: ${refCode}`);
+    closeModal("m-fund-wallet");renderWalletBalance();renderWallet();
+    toast("Payment submitted!","We will credit your balance once confirmed","success");
+  }catch(e){toast("Error",e.message,"error");}
+  btn.disabled=false;spin.style.display="none";
+};
+
+// ════ COMMISSION: WRITE TO PARTNER EARNINGS ════
+async function writeCommission(pinCount,pinType){
+  const marketerId=SCHOOL?.marketerId||null;if(!marketerId)return;
+  const partSnap=await get(dbr(`partners/${marketerId}`));if(!partSnap.exists())return;
+  const partner=partSnap.val();const uplineId=partner.uplineId||null;
+  const total=pinCount*PIN_PRICE;
+  const directAmt=Math.round(total*0.30);
+  // Direct partner
+  const dSnap=await get(dbr(`partnerEarnings/${marketerId}`));const dCur=dSnap.exists()?dSnap.val():{balance:0,totalEarned:0};
+  await set(dbr(`partnerEarnings/${marketerId}`),{balance:(dCur.balance||0)+directAmt,totalEarned:(dCur.totalEarned||0)+directAmt,lastActivity:Date.now()});
+  await push(dbr(`partnerTransactions/${marketerId}`),{type:"commission_direct",amount:directAmt,schoolId:SCHOOL_ID,schoolName:SCHOOL?.schoolName||"",pinCount,pinType,timestamp:Date.now()});
+  // Upline partner
+  if(uplineId){
+    const uplineAmt=Math.round(total*0.20);
+    const uSnap=await get(dbr(`partnerEarnings/${uplineId}`));const uCur=uSnap.exists()?uSnap.val():{balance:0,totalEarned:0};
+    await set(dbr(`partnerEarnings/${uplineId}`),{balance:(uCur.balance||0)+uplineAmt,totalEarned:(uCur.totalEarned||0)+uplineAmt,lastActivity:Date.now()});
+    await push(dbr(`partnerTransactions/${uplineId}`),{type:"commission_network",amount:uplineAmt,schoolId:SCHOOL_ID,schoolName:SCHOOL?.schoolName||"",pinCount,pinType,referredPartnerId:marketerId,timestamp:Date.now()});
+  }
+}
+
+// ════ NEW FEE PIN HANDLER (on pins page tab) ════
+document.getElementById("gen-fee-pin-btn2").addEventListener("click",async()=>{
+  const stuId=document.getElementById("fee-pin-stu2").value;const sessionId=document.getElementById("fee-pin-sess2").value;const amount=parseInt(document.getElementById("fee-pin-amount2").value)||0;
+  if(!stuId||!sessionId||!amount){toast("Select student, session and enter amount","","error");return;}
+  if((WALLET.balance||0)<PIN_PRICE){toast("Insufficient wallet balance","Fund your wallet first","error");switchPinTab("result");goPage("wallet");return;}
+  const stu=STUDENTS[stuId]||ALUMNI[stuId];const btn=document.getElementById("gen-fee-pin-btn2");btn.disabled=true;btn.innerHTML='<div class="spin"></div> Generating...';
+  try{
+    await deductWallet(PIN_PRICE,`Fee pin for ${stu?.name||stuId}`);
+    const pin=genPin();const id=genId("FPAY");
+    await set(dbr(`feePins/${SCHOOL_ID}/${id}`),{pin,amount,studentId:stuId,studentName:stu?.name||stuId,sessionId,schoolId:SCHOOL_ID,type:"fee",note:document.getElementById("fee-pin-note2").value.trim(),used:false,createdAt:Date.now()});
+    await writeCommission(1,"fee");
+    document.getElementById("fee-pin-display2").textContent=pin;
+    document.getElementById("fee-pin-info2").textContent=`${fmt(amount)} · ${stu?.name||stuId} · ${S.sessions[sessionId]?.name||"—"}`;
+    document.getElementById("fee-pin-result2").style.display="block";
+    await auditLog("Fee pin generated",`${fmt(amount)} for ${stu?.name||stuId}`);
+    toast("Fee pin generated!","₦850 deducted from wallet","success");
+    renderFeePins2();
+  }catch(e){toast("Error",e.message,"error");}
+  btn.disabled=false;btn.textContent="Generate Fee Pin";
+});
+
+// ════ RENDER FEE PINS ON PINS PAGE ════
+async function renderFeePins2(){
+  const snap=await get(dbr(`feePins/${SCHOOL_ID}`));const tbody=document.getElementById("fee-pins-tbody2");if(!tbody)return;
+  if(!snap.exists()){tbody.innerHTML=`<tr><td colspan="5"><div class="empty"><p>No fee pins yet</p></div></td></tr>`;return;}
+  const pins=[];snap.forEach(c=>pins.push({key:c.key,...c.val()}));
+  pins.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  tbody.innerHTML=pins.slice(0,50).map(p=>`<tr>
+    <td><code style="font-family:'Syne',sans-serif;font-size:10px;letter-spacing:1px;color:var(--P2)">${p.pin}</code></td>
+    <td class="td-b">${p.studentName||p.studentId}</td>
+    <td style="color:var(--success);font-weight:700">${fmt(p.amount)}</td>
+    <td style="font-size:10px;color:var(--text3)">${p.note||"—"}</td>
+    <td><span class="badge ${p.used?"b-r":"b-g"}">${p.used?"Used":"Active"}</span></td>
+  </tr>`).join("")||`<tr><td colspan="5"><div class="empty"><p>No fee pins</p></div></td></tr>`;
+}
+
+// ════ POPULATE WALLET SELECTS DONE — fee-pin-stu2/sess2 handled in populateSelects above ════
+</script></body>
 </html>
