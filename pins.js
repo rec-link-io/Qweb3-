@@ -16,7 +16,7 @@
 const { db }                             = require('../utils/firebase');
 const { deductWallet }                   = require('../utils/transactions');
 const { writeCommission }                = require('./partners');
-const { requireFields, validateQuantity } = require('../utils/validators');
+const { requireFields, validateQuantity, sanitizeString } = require('../utils/validators');
 const { logAudit }                       = require('./audit');
 
 const PIN_PRICE = 850;
@@ -36,7 +36,7 @@ function genId(prefix) {
   return `${prefix}${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).slice(2, 5).toUpperCase()}`;
 }
 
-// ── RESULT PINS ──────────────────────────────────────────────────────────────
+// ── RESULT PINS ──────────────────────────────────────────────────────────
 
 /**
  * Generate a batch of result scratch pins for a school.
@@ -61,12 +61,6 @@ async function generateResultPins(school, data, userEmail) {
   const sessName = sessSnap.val().name || data.sessionId;
   const termName = termSnap.val().name || data.termId;
 
-console.log("========== RESULT PIN PURCHASE ==========");
-console.log("school.id =", school.id);
-console.log("totalCost =", totalCost);
-console.log("quantity =", quantity);
-console.log("session =", data.sessionId);
-console.log("term =", data.termId);
   // Atomically deduct — throws if insufficient balance
   const newBalance = await deductWallet(
     school.id,
@@ -89,6 +83,7 @@ console.log("term =", data.termId);
       termId:    data.termId,
       used:      false,
       usedBy:    null,
+      usedAt:    null,
       type:      'result',
       createdAt: now,
     };
@@ -122,7 +117,7 @@ console.log("term =", data.termId);
   };
 }
 
-// ── FEE PINS ─────────────────────────────────────────────────────────────────
+// ── FEE PINS ──────────────────────────────────────────────────────────
 
 /**
  * Generate a single fee payment pin for a specific student.
@@ -180,6 +175,7 @@ async function generateFeePins(school, data, userEmail) {
     type:        'fee',
     note:        data.note ? String(data.note).trim().substring(0, 200) : '',
     used:        false,
+    usedAt:      null,
     createdAt:   now,
   });
 
@@ -207,7 +203,7 @@ async function generateFeePins(school, data, userEmail) {
 }
 
 
-// ── PIN HISTORY ──────────────────────────────────────────────────────────────
+// ── PIN HISTORY ─────────────────────────────────────────────────────────
 
 async function listPinHistory(school, data = {}) {
   const type = data.type || 'result';
@@ -233,4 +229,117 @@ async function listPinHistory(school, data = {}) {
   };
 }
 
-module.exports = { generateResultPins, generateFeePins, listPinHistory };
+/**
+ * Search and filter PIN inventory.
+ * Supports filtering by: status (used/unused), date range, student (fee pins only), session, term
+ */
+async function searchPins(school, data = {}) {
+  const type = data.type || 'result';
+  const refPath = type === 'fee' ? `feePins/${school.id}` : `pins/${school.id}`;
+  const snap = await db.ref(refPath).once('value');
+
+  let pins = [];
+  if (snap.exists()) {
+    snap.forEach(child => {
+      const value = child.val() || {};
+      pins.push({ id: child.key, ...value });
+    });
+  }
+
+  // Filter by status
+  if (data.status === 'used') {
+    pins = pins.filter(p => !!p.used);
+  } else if (data.status === 'unused') {
+    pins = pins.filter(p => !p.used);
+  }
+
+  // Filter by session (result pins)
+  if (data.sessionId && type === 'result') {
+    pins = pins.filter(p => p.sessionId === data.sessionId);
+  }
+
+  // Filter by term (result pins)
+  if (data.termId && type === 'result') {
+    pins = pins.filter(p => p.termId === data.termId);
+  }
+
+  // Filter by student (fee pins)
+  if (data.studentId && type === 'fee') {
+    pins = pins.filter(p => p.studentId === data.studentId);
+  }
+
+  // Filter by date range
+  if (data.startDate && data.endDate) {
+    const startTime = new Date(data.startDate).getTime();
+    const endTime = new Date(data.endDate).getTime() + 86400000; // Include entire end day
+    pins = pins.filter(p => p.createdAt >= startTime && p.createdAt <= endTime);
+  }
+
+  // Search by PIN code
+  if (data.searchPin) {
+    const searchStr = sanitizeString(data.searchPin, 20).toUpperCase();
+    pins = pins.filter(p => p.pin && p.pin.includes(searchStr));
+  }
+
+  // Sort by creation date, newest first
+  pins.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  // Apply limit if specified
+  const limit = data.limit ? Math.min(parseInt(data.limit, 10), 1000) : 100;
+  const offset = data.offset ? parseInt(data.offset, 10) : 0;
+  const paginated = pins.slice(offset, offset + limit);
+
+  return {
+    success: true,
+    pins: paginated,
+    total: pins.length,
+    used: pins.filter(p => !!p.used).length,
+    unused: pins.filter(p => !p.used).length,
+    limit,
+    offset,
+  };
+}
+
+/**
+ * Get PIN statistics for dashboard.
+ */
+async function getPinStats(school, data = {}) {
+  const type = data.type || 'result';
+  const refPath = type === 'fee' ? `feePins/${school.id}` : `pins/${school.id}`;
+  const snap = await db.ref(refPath).once('value');
+
+  const pins = [];
+  if (snap.exists()) {
+    snap.forEach(child => {
+      pins.push(child.val() || {});
+    });
+  }
+
+  const total = pins.length;
+  const used = pins.filter(p => !!p.used).length;
+  const unused = total - used;
+
+  // Calculate generation rate (pins created in last 7 days)
+  const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+  const lastWeek = pins.filter(p => p.createdAt >= sevenDaysAgo).length;
+
+  return {
+    success: true,
+    stats: {
+      type,
+      total,
+      used,
+      unused,
+      usagePercent: total > 0 ? Math.round((used / total) * 100) : 0,
+      generatedLastWeek: lastWeek,
+    }
+  };
+}
+
+module.exports = { 
+  generateResultPins, 
+  generateFeePins, 
+  listPinHistory,
+  searchPins,
+  getPinStats,
+};
