@@ -76,12 +76,14 @@ console.log("term =", data.termId);
 
   // Build pin batch (single multi-path update is faster than individual sets)
   const pinsUpdate = {};
+  const generatedPins = [];
   const now = Date.now();
 
   for (let i = 0; i < quantity; i++) {
     const id = genId('PIN');
+    const code = genPin();
     pinsUpdate[id] = {
-      pin:       genPin(),
+      pin:       code,
       schoolId:  school.id,
       sessionId: data.sessionId,
       termId:    data.termId,
@@ -90,6 +92,7 @@ console.log("term =", data.termId);
       type:      'result',
       createdAt: now,
     };
+    generatedPins.push({ id, pin: code, used: false, type: 'result', createdAt: now });
   }
 
   await db.ref(`pins/${school.id}`).update(pinsUpdate);
@@ -109,6 +112,8 @@ console.log("term =", data.termId);
   return {
     success:        true,
     pinsGenerated:  quantity,
+    generated:       quantity,
+    pins:           generatedPins,
     totalCost,
     newBalance,
     session:        sessName,
@@ -201,4 +206,31 @@ async function generateFeePins(school, data, userEmail) {
   };
 }
 
-module.exports = { generateResultPins, generateFeePins };
+
+// ── PIN HISTORY ──────────────────────────────────────────────────────────────
+
+async function listPinHistory(school, data = {}) {
+  const type = data.type || 'result';
+  const refPath = type === 'fee' ? `feePins/${school.id}` : `pins/${school.id}`;
+  const snap = await db.ref(refPath).once('value');
+
+  const pins = [];
+  if (snap.exists()) {
+    snap.forEach(child => {
+      const value = child.val() || {};
+      pins.push({ id: child.key, ...value });
+    });
+  }
+
+  pins.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  return {
+    success: true,
+    pins,
+    total: pins.length,
+    used: pins.filter(pin => !!pin.used).length,
+    unused: pins.filter(pin => !pin.used).length
+  };
+}
+
+module.exports = { generateResultPins, generateFeePins, listPinHistory };
