@@ -2223,7 +2223,7 @@ function renderStudents(filter="",clsFilter=""){
       <td style="font-size:11px">${s.parentPhone||"—"}</td>
       <td><span class="badge ${schoolCount>1?"b-y":"b-gr"}">${schoolCount} school${schoolCount>1?"s":""}</span></td>
       <td><span class="badge b-g">Active</span></td>
-      <td class="td-acts"><button class="btn bs bsm" onclick="viewStudentProfile('${id}')">View</button><button class="btn bw bsm" onclick="markAlumni('${id}')">Alumni</button></td>
+      <td class="td-acts"><button class="btn bs bsm" onclick="viewStudentProfile('${id}')">View</button><button class="btn bg bsm" onclick="resetStudentPassword('${id}')">Password</button><button class="btn bw bsm" onclick="markAlumni('${id}')">Alumni</button></td>
     </tr>`;
   }).join("");
   renderAlumni();
@@ -2315,13 +2315,23 @@ window.reactivateStudent=async function(studentId){
     await loadSchoolStudents();renderStudents();toast("Student re-enrolled",res.studentName||"","success");
   }catch(e){toast("Error",e.message,"error");}
 };
+window.resetStudentPassword=async function(studentId){
+  const password=prompt('Enter new student password (leave blank to auto-generate):','');
+  if(password===null)return;
+  try{
+    const res=await callAPI('resetStudentPassword',{studentId,password:password.trim()||undefined});
+    await loadSchoolStudents();renderStudents();
+    toast('Student password reset',`New password: ${res.password}`,'success');
+  }catch(e){toast('Error',e.message,'error');}
+};
+
 window.viewStudentProfile=function(studentId){
   const s=STUDENTS[studentId]||ALUMNI[studentId];if(!s)return;
   const e=s._enrollment||{};const cls=S.classes[e.classId]?.name||"—";const arm=e.armId&&S.arms[e.armId]?S.arms[e.armId].name||"":"";
   document.getElementById("m-sv-title").textContent=s.name;
   document.getElementById("m-sv-body").innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border)">${s.photoUrl?`<img src="${s.photoUrl}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--border2)" alt=""/>`:""}<div><div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700">${s.name}</div><div style="font-size:11px;color:var(--text2)">${cls}${arm} · ${s.studentId}</div></div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">${[["Gender",s.gender||"—"],["DOB",s.dob||"—"],["Admission",e.admissionNumber||"—"],["Parent",s.parentName||"—"],["Parent Phone",s.parentPhone||"—"],["Portal Password",s.studentPassword||"—"],["Schools",(s.schoolHistory||[]).join(" → ")||SCHOOL_ID],["Enrolled",e.enrolledAt?new Date(e.enrolledAt).toLocaleDateString("en-NG"):"—"]].map(([l,v])=>`<div style="background:var(--bg4);border:1px solid var(--border);border-radius:var(--radius);padding:9px 11px"><div style="font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px">${l}</div><div style="font-size:12px;font-weight:500;color:var(--text)">${v}</div></div>`).join("")}</div>`;
-  document.getElementById("m-sv-foot").innerHTML=`<button class="btn bs" data-close="m-stu-view">Close</button><button class="btn bw bsm" onclick="markAlumni('${studentId}');closeModal('m-stu-view')">Mark Alumni</button>`;
+  document.getElementById("m-sv-foot").innerHTML=`<button class="btn bs" data-close="m-stu-view">Close</button><button class="btn bg bsm" onclick="resetStudentPassword('${studentId}')">Reset Password</button><button class="btn bw bsm" onclick="markAlumni('${studentId}');closeModal('m-stu-view')">Mark Alumni</button>`;
   openModal("m-stu-view");
 };
 
@@ -2431,12 +2441,22 @@ function renderTeachers(filter=""){
       <td style="font-size:10px">${classes}</td>
       <td><code style="background:var(--bg4);padding:2px 7px;border-radius:4px;font-size:10px;letter-spacing:1px">${t.accessKey}</code></td>
       <td>
-        <button class="btn bd bsm" onclick="deleteTeacher('${id}')">Del</button>
+        <button class="btn bg bsm" onclick="resetTeacherPassword('${id}')">Password</button><button class="btn bd bsm" onclick="deleteTeacher('${id}')">Del</button>
       </td>
     </tr>`;
   }).join(""):`<tr><td colspan="6"><div class="empty"><p>No teachers yet</p></div></td></tr>`;
 }
 document.getElementById("tch-search").addEventListener("input",e=>renderTeachers(e.target.value));
+
+window.resetTeacherPassword=async function(teacherId){
+  const password=prompt('Enter new teacher password/access key (leave blank to auto-generate):','');
+  if(password===null)return;
+  try{
+    const res=await callAPI('resetTeacherPassword',{teacherId,password:password.trim()||undefined});
+    await loadAll();renderTeachers();
+    toast('Teacher password reset',`New password: ${res.password}`,'success');
+  }catch(e){toast('Error',e.message,'error');}
+};
 
 window.deleteTeacher=async function(teacherId){
   if(!confirm("Remove this teacher?"))return;
@@ -2790,7 +2810,7 @@ async function renderPins(){
   const resultPins=pins.filter(p=>!p.type||p.type==="result");
   const filtered=filter?resultPins.filter(p=>filter==="used"?p.used:!p.used):resultPins;
   countEl.textContent=`${resultPins.filter(p=>!p.used).length} unused · ${resultPins.length} total`;
-  grid.innerHTML=filtered.slice(0,200).map(p=>`<div class="pin-card"><div class="pin-code">${p.pin}</div><span class="badge ${p.used?"b-r":"b-g"}">${p.used?"Used":"Active"}</span></div>`).join("")||'<div class="empty" style="grid-column:1/-1"><p>No pins match</p></div>';
+  grid.innerHTML=filtered.slice(0,500).map(p=>`<div class="pin-card" style="border-color:${p.used?'rgba(239,68,68,0.35)':'rgba(34,197,94,0.35)'}"><div class="pin-code">${p.pin}</div><span class="badge ${p.used?"b-r":"b-g"}">${p.used?"Used":"Unused"}</span><div style="font-size:9px;color:var(--text3);margin-top:5px">${p.usedBy?'By: '+p.usedBy:'Not used yet'}</div><div style="font-size:9px;color:var(--text3)">${p.createdAt?new Date(p.createdAt).toLocaleString('en-NG'):'—'}</div></div>`).join("")||'<div class="empty" style="grid-column:1/-1"><p>No pins match</p></div>';
 }
 document.getElementById("pin-filter").addEventListener("change",renderPins);
 

@@ -24,13 +24,12 @@ const { logAudit } = require('./audit');
 // ─────────────────────────────────────────────────────────────
 
 async function createTeacher(school, data, userEmail) {
-  requireFields(data, [
-    'fullName',
-    'email'
-  ]);
+  if (!data.fullName && !data.name) {
+    throw new Error('Teacher name is required.');
+  }
   
-  const fullName = sanitizeString(data.fullName, 120);
-  const email = validateEmail(data.email);
+  const fullName = sanitizeString(data.fullName || data.name, 120);
+  const email = data.email ? validateEmail(data.email) : `${String(data.id || Date.now()).toLowerCase()}@teacher.local`;
   
   // Prevent duplicate email in same school
   const teacherSnap = await db
@@ -43,13 +42,14 @@ async function createTeacher(school, data, userEmail) {
     throw new Error('A teacher with this email already exists.');
   }
   
-  const teacherId = `TCH${Date.now().toString(36).toUpperCase()}`;
+  const teacherId = sanitizeString(data.teacherId || data.id || `TCH${Date.now().toString(36).toUpperCase()}`, 80);
   
   const teacher = {
     teacherId,
     schoolId: school.id,
     
     fullName,
+    name: fullName,
     email,
     
     phone: sanitizeString(data.phone || '', 30),
@@ -72,10 +72,19 @@ async function createTeacher(school, data, userEmail) {
     ),
     
     classTeacherOf: data.classTeacherOf || null,
+
+    classes: Array.isArray(data.classes) ? data.classes : [],
+
+    accessKey: sanitizeString(data.accessKey || data.password || '', 80),
+    teacherPassword: sanitizeString(data.password || data.accessKey || '', 80),
     
     assignedSubjects: Array.isArray(data.assignedSubjects) ?
       data.assignedSubjects :
-      [],
+      (Array.isArray(data.subjectIds) ? data.subjectIds : []),
+
+    subjectIds: Array.isArray(data.subjectIds) ?
+      data.subjectIds :
+      (Array.isArray(data.assignedSubjects) ? data.assignedSubjects : []),
     
     status: 'active',
     
@@ -98,6 +107,10 @@ async function createTeacher(school, data, userEmail) {
   return {
     success: true,
     teacherId,
+    id: teacherId,
+    name: fullName,
+    subjectCount: teacher.subjectIds.length,
+    password: teacher.teacherPassword,
     message: `${fullName} created successfully.`
   };
 }
@@ -297,10 +310,48 @@ async function deleteTeacher(
   };
 }
 
+
+// ─────────────────────────────────────────────────────────────
+// RESET TEACHER PASSWORD
+// ─────────────────────────────────────────────────────────────
+
+async function resetTeacherPassword(school, data, userEmail) {
+  requireFields(data, ['teacherId']);
+
+  const ref = db.ref(`teachers/${school.id}/${data.teacherId}`);
+  const snap = await ref.once('value');
+
+  if (!snap.exists()) {
+    throw new Error('Teacher not found.');
+  }
+
+  const password = sanitizeString(
+    data.password || Math.random().toString(36).slice(2, 10).toUpperCase(),
+    80
+  );
+
+  await ref.update({
+    accessKey: password,
+    teacherPassword: password,
+    passwordUpdatedAt: Date.now(),
+    passwordUpdatedBy: userEmail
+  });
+
+  await logAudit(school.id, 'Teacher password reset', data.teacherId, userEmail);
+
+  return {
+    success: true,
+    teacherId: data.teacherId,
+    password,
+    message: 'Teacher password reset successfully.'
+  };
+}
+
 // ─────────────────────────────────────────────────────────────
 
 module.exports = {
   createTeacher,
   updateTeacher,
-  deleteTeacher
+  deleteTeacher,
+  resetTeacherPassword
 };

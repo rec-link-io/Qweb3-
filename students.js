@@ -49,17 +49,23 @@ function normalizeGender(gender) {
 
 async function createStudent(school, data, userEmail) {
 
-    requireFields(data, [
-        'firstName',
-        'lastName',
-        'gender',
-        'classId',
-        'armId',
-        'admissionNumber'
-    ]);
+    requireFields(data, ['classId']);
 
-    const firstName = sanitizeString(data.firstName, 80);
-    const lastName = sanitizeString(data.lastName, 80);
+    if (!data.firstName && !data.lastName && !data.name) {
+        throw new Error('Student name is required.');
+    }
+
+    const nameParts = String(data.name || '').trim().split(/\s+/).filter(Boolean);
+
+    const firstName = sanitizeString(
+        data.firstName || nameParts[0] || '',
+        80
+    );
+
+    const lastName = sanitizeString(
+        data.lastName || nameParts.slice(1).join(' ') || firstName,
+        80
+    );
 
     const middleName = sanitizeString(
         data.middleName || '',
@@ -67,11 +73,11 @@ async function createStudent(school, data, userEmail) {
     );
 
     const admissionNumber = sanitizeString(
-        data.admissionNumber,
+        data.admissionNumber || generateStudentId(school.id),
         60
     );
 
-    const gender = normalizeGender(data.gender);
+    const gender = normalizeGender(data.gender || 'Male');
 
     /* ----------------------------------
        Verify Class
@@ -93,8 +99,10 @@ async function createStudent(school, data, userEmail) {
         .ref(`arms/${school.id}/${data.armId}`)
         .once('value');
 
-    if (!armSnap.exists()) {
-        throw new Error('Selected arm does not exist.');
+    if (data.armId) {
+        if (!armSnap.exists()) {
+            throw new Error('Selected arm does not exist.');
+        }
     }
 
     /* ----------------------------------
@@ -182,15 +190,30 @@ async function createStudent(school, data, userEmail) {
 
         guardianName:
             sanitizeString(
-                data.guardianName || '',
+                data.guardianName || data.parentName || '',
                 120
             ),
 
         guardianPhone:
             sanitizeString(
-                data.guardianPhone || '',
+                data.guardianPhone || data.parentPhone || '',
                 40
             ),
+
+        parentName:
+            sanitizeString(data.parentName || data.guardianName || '', 120),
+
+        parentPhone:
+            sanitizeString(data.parentPhone || data.guardianPhone || '', 40),
+
+        parentEmail:
+            data.parentEmail ? validateEmail(data.parentEmail) : '',
+
+        photoUrl:
+            sanitizeString(data.photoUrl || '', 500),
+
+        studentPassword:
+            sanitizeString(data.password || studentId.slice(-4), 80),
 
         createdAt: now,
 
@@ -205,7 +228,7 @@ async function createStudent(school, data, userEmail) {
 
         classId: data.classId,
 
-        armId: data.armId,
+        armId: data.armId || '',
 
         status: 'active',
 
@@ -247,7 +270,9 @@ async function createStudent(school, data, userEmail) {
 
         classId: data.classId,
 
-        armId: data.armId,
+        armId: data.armId || '',
+
+        password: student.studentPassword,
 
         message:
             'Student created successfully.'
@@ -1178,7 +1203,7 @@ async function reactivateStudent(school, data, userEmail) {
 
         classId: data.classId,
 
-        armId: data.armId,
+        armId: data.armId || '',
 
         status: 'active',
 
@@ -1191,6 +1216,42 @@ async function reactivateStudent(school, data, userEmail) {
 
 }
 
+
+/* ==========================================================
+   RESET STUDENT PASSWORD
+========================================================== */
+
+async function resetStudentPassword(school, data, userEmail) {
+    requireFields(data, ['studentId']);
+
+    const studentId = sanitizeString(data.studentId, 80);
+    const enrollSnap = await db.ref(`studentEnrollments/${studentId}/${school.id}`).once('value');
+
+    if (!enrollSnap.exists()) {
+        throw new Error('Student is not enrolled in your school.');
+    }
+
+    const password = sanitizeString(
+        data.password || Math.random().toString(36).slice(2, 10).toUpperCase(),
+        80
+    );
+
+    await db.ref(`students/${studentId}`).update({
+        studentPassword: password,
+        passwordUpdatedAt: Date.now(),
+        passwordUpdatedBy: userEmail
+    });
+
+    await logAudit(school.id, 'Student password reset', studentId, userEmail);
+
+    return {
+        success: true,
+        studentId,
+        password,
+        message: 'Student password reset successfully.'
+    };
+}
+
 // ─────────────────────────────────────────────────────────────
 // EXPORTS
 // ─────────────────────────────────────────────────────────────
@@ -1199,5 +1260,6 @@ module.exports = {
     updateStudent,
     transferStudent,
     markAlumni,
-    reactivateStudent
+    reactivateStudent,
+    resetStudentPassword
 };
